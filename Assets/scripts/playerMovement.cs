@@ -280,7 +280,7 @@ public class playerMovement : MonoBehaviour
         }
 
         // jump code
-        if (jumpHangGraceTicks > 0 && groundRegisterGraceTicks > 0)
+        if (jumpHangGraceTicks > 0 && groundRegisterGraceTicks > 0 && !wallSliding)
         {
             //This is bad, fix later
             newYvel = jumpVel;
