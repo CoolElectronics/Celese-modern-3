@@ -114,7 +114,7 @@ public class RoomManager : MonoBehaviour
                         currentRoom.maxCamY + currentRoom.transform.position.y);
 
                 camPos.z = -10;
-                Debug.Log (camPos);
+    
 
                 Vector3 cvel = Vector3.zero;
                 oldCameraPosition =

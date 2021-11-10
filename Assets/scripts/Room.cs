@@ -8,13 +8,13 @@ public class Room : MonoBehaviour
     bool showGizmos = false;
 
     [SerializeField]
-    List<RoomTransitionBBox> transitionBoxes = new List<RoomTransitionBBox>();
+    public List<RoomTransitionBBox> transitionBoxes = new List<RoomTransitionBBox>();
 
     [SerializeField]
     LayerMask lmPlayer;
 
     [SerializeField]
-    Vector2 defaultRespawn;
+    public Vector2 defaultRespawn;
 
     public bool scrollX = false;
 
