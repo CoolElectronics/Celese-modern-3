@@ -11,7 +11,7 @@ public class Room : MonoBehaviour
     public List<RoomTransitionBBox> transitionBoxes = new List<RoomTransitionBBox>();
 
     [SerializeField]
-    LayerMask lmPlayer;
+    public LayerMask lmPlayer;
 
     [SerializeField]
     public Vector2 defaultRespawn;
