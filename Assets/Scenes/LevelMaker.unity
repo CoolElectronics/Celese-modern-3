@@ -15307,26 +15307,32 @@ MonoBehaviour:
   autotilers:
   - button: {fileID: 885784290}
     name: Intro
-    icon: {fileID: 21300000, guid: a4c76344aba14934ba8750ef257775d6, type: 3}
-    layer: 0
-    flat:
-    - {fileID: 11400000, guid: 36552d6b1135a384faf974baf7d1e6ee, type: 2}
-    mid1: []
-    mid2: []
-    mid3: []
-    corner: []
-    innercorner: []
+    iconSprite: {fileID: 21300000, guid: a4c76344aba14934ba8750ef257775d6, type: 3}
+    icon: {fileID: 11400000, guid: 36552d6b1135a384faf974baf7d1e6ee, type: 2}
+    rules:
+    - tiles:
+      - {fileID: 11400000, guid: 36552d6b1135a384faf974baf7d1e6ee, type: 2}
+      conditions:
+      - requireSetTile: 0
+        requirementTile: []
+        offset: {x: 0, y: 1, z: 0}
+        type: 1
+      rotation: 0
+      rotateConditions: 1
+    - tiles:
+      - {fileID: 11400000, guid: cfccbc7bccd8afa40bb8a838fa49e72f, type: 2}
+      conditions:
+      - requireSetTile: 0
+        requirementTile: []
+        offset: {x: 0, y: 1, z: 0}
+        type: 0
+      rotation: 0
+      rotateConditions: 1
   - button: {fileID: 1045928112}
     name: Cyber
+    iconSprite: {fileID: 0}
     icon: {fileID: 1742925155546500994, guid: 71dac268e5570f34fa136fa910dce7c1, type: 3}
-    layer: 0
-    flat:
-    - {fileID: 11400000, guid: 1b3fd9ee59877f946b8ddf86886f23da, type: 2}
-    mid1: []
-    mid2: []
-    mid3: []
-    corner: []
-    innercorner: []
+    rules: []
   terrainMap: {fileID: 881198047}
   hazardMap: {fileID: 894624375}
   bgMap: {fileID: 51470387}

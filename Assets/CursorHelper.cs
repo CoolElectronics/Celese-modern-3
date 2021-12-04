@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
 
 public class CursorHelper : MonoBehaviour
 {
@@ -44,7 +46,7 @@ public class CursorHelper : MonoBehaviour
         {
             case CursorState.Paint:
                 transform.position = new Vector3(Mathf.Round((worldPosition.x - 0.25f) * 2) / 2 + 0.25f, Mathf.Round((worldPosition.y + 0.25f) * 2) / 2 - 0.25f, 0);
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && !ClickingUI())
                 {
                     dragging = true;
                     paintOrgin = transform.position;
@@ -87,7 +89,7 @@ public class CursorHelper : MonoBehaviour
                         cameraStored = Camera.main.transform.position;
                     }
                 }
-                else if (Input.GetMouseButton(0))
+                else if (Input.GetMouseButton(0) && !ClickingUI())
                 {
                     dragging = true;
                     moveOrgin = transform.position;
@@ -98,7 +100,7 @@ public class CursorHelper : MonoBehaviour
     public void UpdateSelectedPreset(AutotilerPreset preset)
     {
         selectedPreset = preset;
-        paint.GetComponent<SpriteRenderer>().sprite = selectedPreset.icon;
+        paint.GetComponent<SpriteRenderer>().sprite = selectedPreset.iconSprite;
     }
     public void updateCursorState(CursorState newCursorState)
     {
@@ -114,5 +116,25 @@ public class CursorHelper : MonoBehaviour
                 move.SetActive(false);
                 break;
         }
+    }
+    
+    bool ClickingUI()
+    {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            if (EventSystem.current.currentSelectedGameObject)
+            {
+                if (EventSystem.current.currentSelectedGameObject.layer == 5)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                Debug.Log("Gameobject not found");
+                return true;
+            }
+        }
+        return false;
     }
 }

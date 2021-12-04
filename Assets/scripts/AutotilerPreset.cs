@@ -9,15 +9,7 @@ public struct AutotilerPreset
 {
     public Button button;
     public string name;
-    public Sprite icon;
-    public int layer;
-
-    public List<TileBase> flat;
-    public List<TileBase> mid1;
-    public List<TileBase> mid2;
-    public List<TileBase> mid3;
-    public List<TileBase> corner;
-    public List<TileBase> innercorner;
-
-
+    public Sprite iconSprite;
+    public TileBase icon;
+    public List<PresetRule> rules;
 }
