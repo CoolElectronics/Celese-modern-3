@@ -21,8 +21,15 @@ public class CursorHelper : MonoBehaviour
     [SerializeField]
     float cameraSpeed;
     Vector3 paintOrgin;
+    [SerializeField]
+    float zoomSpeed;
+    [SerializeField]
+    GameObject outline;
 
+    [SerializeField]
+    AutotilerPreset eraserPreset;
     AutotilerPreset selectedPreset;
+    AutotilerPreset previousPreset;
 
     void Start()
     {
@@ -42,6 +49,22 @@ public class CursorHelper : MonoBehaviour
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         worldPosition.z = 0;
         transform.position = worldPosition;
+        if (Input.GetMouseButtonDown(2)){
+            updateCursorState(CursorState.Move);
+        }
+        if (Input.GetMouseButtonUp(2)){
+            dragging = false;
+            updateCursorState(CursorState.Paint);
+        }
+        if (Input.GetKeyDown(KeyCode.LeftShift)){
+            previousPreset = selectedPreset;
+            UpdateSelectedPreset(eraserPreset);
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift)){
+            UpdateSelectedPreset(previousPreset);
+        }
+        
+        Camera.main.orthographicSize -= Input.mouseScrollDelta.y * zoomSpeed;        
         switch (cursorState)
         {
             case CursorState.Paint:
@@ -70,7 +93,6 @@ public class CursorHelper : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log("well, this is awkward");
                     }
                 }
                 break;
@@ -83,18 +105,26 @@ public class CursorHelper : MonoBehaviour
                     Vector3 newCameraPos = cameraStored - (camPos - moveOrgin) / cameraSpeed;
                     newCameraPos.z = -10;
                     Camera.main.transform.position = newCameraPos;
-                    if (!Input.GetMouseButton(0))
+                    if (!Input.GetMouseButton(0) || !Input.GetMouseButton(2))
                     {
                         dragging = false;
                         cameraStored = Camera.main.transform.position;
                     }
                 }
-                else if (Input.GetMouseButton(0) && !ClickingUI())
+                else if ((Input.GetMouseButton(0) || Input.GetMouseButton(2)) && !ClickingUI())
                 {
                     dragging = true;
                     moveOrgin = transform.position;
                 }
                 break;
+        }
+        if (dragging && cursorState == CursorState.Paint)
+        {
+            outline.SetActive(true);
+            outline.transform.position = new Vector3((paintOrgin.x + transform.position.x) / 2, (paintOrgin.y + transform.position.y) / 2, 0);
+            outline.transform.localScale = new Vector3(Mathf.Abs(paintOrgin.x - transform.position.x) * 1 + 0.5f, Mathf.Abs(paintOrgin.y - transform.position.y) * 1 + 0.5f, 0);
+        }else{
+            outline.SetActive(false);
         }
     }
     public void UpdateSelectedPreset(AutotilerPreset preset)
@@ -131,7 +161,6 @@ public class CursorHelper : MonoBehaviour
             }
             else
             {
-                Debug.Log("Gameobject not found");
                 return true;
             }
         }

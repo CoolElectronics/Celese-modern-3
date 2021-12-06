@@ -11,5 +11,6 @@ public struct AutotilerPreset
     public string name;
     public Sprite iconSprite;
     public TileBase icon;
+    public Tilemap layer;
     public List<PresetRule> rules;
 }

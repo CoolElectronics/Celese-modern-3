@@ -9,7 +9,7 @@ public struct PresetRule
 {
     public List<TileBase> tiles;
     public List<TileCondition> conditions;
-    public RotationType rotation;
+    public int rotation;
 
     public bool rotateConditions;
 }
