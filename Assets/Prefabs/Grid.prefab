@@ -76,6 +76,7 @@ MonoBehaviour:
   roomLmPlayer:
     serializedVersion: 2
     m_Bits: 8
+  editorContainer: {fileID: 0}
   tiles:
   - name: bg
     tile: {fileID: 11400000, guid: cfccbc7bccd8afa40bb8a838fa49e72f, type: 2}
@@ -111,11 +112,11 @@ MonoBehaviour:
     tile: {fileID: 11400000, guid: cfccbc7bccd8afa40bb8a838fa49e72f, type: 2}
   - name: cornerSpike0
     tile: {fileID: 11400000, guid: 4171b56c55294944f85a1ba803f5ac18, type: 2}
-  - name: flatU0
+  - name: FlatU0
     tile: {fileID: 11400000, guid: 1b3fd9ee59877f946b8ddf86886f23da, type: 2}
-  - name: flatU_20
+  - name: FlatU_20
     tile: {fileID: 11400000, guid: 7e6447ca9d1140f41abe6fb346cc95d7, type: 2}
-  - name: flatU_30
+  - name: FlatU_30
     tile: {fileID: 11400000, guid: b91eabe891b371145ae7219d7f9978bc, type: 2}
   - name: InnerCorner10
     tile: {fileID: 11400000, guid: 4a43b71ac9081a143b42a8a4623efe50, type: 2}
@@ -140,6 +141,7 @@ MonoBehaviour:
   - name: OuterCornerM1_R10
     tile: {fileID: 11400000, guid: c291c2ad4d86aa1419ec4da2ccab634f, type: 2}
   saveLevelDebug: 0
+  rasterRuleTilesInSelection: 0
 --- !u!1 &2916680586192793890
 GameObject:
   m_ObjectHideFlags: 0

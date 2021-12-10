@@ -25,7 +25,10 @@ public class CursorHelper : MonoBehaviour
     float zoomSpeed;
     [SerializeField]
     GameObject outline;
-
+    [SerializeField]
+    Color outlineColor;
+    [SerializeField]
+    Color rasterColor;
     [SerializeField]
     AutotilerPreset eraserPreset;
     AutotilerPreset selectedPreset;
@@ -81,12 +84,10 @@ public class CursorHelper : MonoBehaviour
                     {
                         if ((transform.position - paintOrgin).magnitude > 0.25f)
                         {
-                            Debug.Log("Painting Block: " + paintOrgin + " to " + transform.position);
                             Autotiler.i.PaintBlock(paintOrgin, transform.position, selectedPreset);
                         }
                         else
                         {
-                            Debug.Log("Painting " + transform.position);
                             Autotiler.i.Paint(transform.position, selectedPreset);
                         }
                         dragging = false;
@@ -104,7 +105,9 @@ public class CursorHelper : MonoBehaviour
                     moveOrgin.z = -10;
                     Vector3 newCameraPos = cameraStored - (camPos - moveOrgin) / cameraSpeed;
                     newCameraPos.z = -10;
-                    Camera.main.transform.position = newCameraPos;
+                    if (!LevelEditor.i.playing){
+                        Camera.main.transform.position = newCameraPos;
+                    }
                     if (!Input.GetMouseButton(0) || !Input.GetMouseButton(2))
                     {
                         dragging = false;
@@ -117,8 +120,35 @@ public class CursorHelper : MonoBehaviour
                     moveOrgin = transform.position;
                 }
                 break;
+            case CursorState.Raster:
+                transform.position = new Vector3(Mathf.Round((worldPosition.x - 0.25f) * 2) / 2 + 0.25f, Mathf.Round((worldPosition.y + 0.25f) * 2) / 2 - 0.25f, 0);
+                if (Input.GetMouseButtonDown(0) && !ClickingUI())
+                {
+                    dragging = true;
+                    paintOrgin = transform.position;
+                }
+
+                if (Input.GetMouseButtonUp(0))
+                {
+                    if (dragging)
+                    {
+                        if ((transform.position - paintOrgin).magnitude > 0.25f)
+                        {
+                            Autotiler.i.RasterBlock(paintOrgin, transform.position);
+                        }
+                        else
+                        {
+                            Autotiler.i.Raster(transform.position);
+                        }
+                        dragging = false;
+                    }
+                    else
+                    {
+                    }
+                }
+                break;
         }
-        if (dragging && cursorState == CursorState.Paint)
+        if (dragging && (cursorState == CursorState.Paint || cursorState == CursorState.Raster))
         {
             outline.SetActive(true);
             outline.transform.position = new Vector3((paintOrgin.x + transform.position.x) / 2, (paintOrgin.y + transform.position.y) / 2, 0);
@@ -142,9 +172,16 @@ public class CursorHelper : MonoBehaviour
                 move.SetActive(true);
                 break;
             case CursorState.Paint:
+                outline.GetComponent<SpriteRenderer>().color = outlineColor;
                 paint.SetActive(true);
                 move.SetActive(false);
                 break;
+            case CursorState.Raster:
+                outline.GetComponent<SpriteRenderer>().color = rasterColor;
+                paint.SetActive(true);
+                move.SetActive(false);
+                break;
+            
         }
     }
     

@@ -58,22 +58,74 @@ public class Autotiler : MonoBehaviour
     }
     public void DeleteTileExt(Vector3Int pos)
     {
-
+        terrainMap.SetTile(pos,null);
+        hazardMap.SetTile(pos,null);
+        bgMap.SetTile(pos,null);
         if (terrainTileExts.ContainsKey(pos))
         {
-            terrainTileExts[pos].Remove();
+            
             terrainTileExts.Remove(pos);
         }
         if (hazardTileExts.ContainsKey(pos))
         {
-            hazardTileExts[pos].Remove();
+            
             hazardTileExts.Remove(pos);
         }
         if (bgTileExts.ContainsKey(pos))
         {
-            bgTileExts[pos].Remove();
+            
             bgTileExts.Remove(pos);
         }
+    }
+    public void Raster(Vector3 pos){
+        RasterTileExt(terrainMap.WorldToCell(pos));
+    }
+    public void RasterBlock(Vector3 start, Vector3 end)
+    {
+        Vector3Int startint = terrainMap.WorldToCell(start);
+        Vector3Int endint = terrainMap.WorldToCell(end);
+        float minx = Mathf.Min(start.x, end.x);
+        float miny = Mathf.Min(start.y, end.y);
+        float maxx = Mathf.Max(start.x, end.x);
+        float maxy = Mathf.Max(start.y, end.y);
+        float x = minx;
+        float y = miny;
+        while (true)
+        {
+
+            if (x > maxx) break;
+            x += 0.5f;
+            //Debug.Log(x);
+            y = miny;
+            while (true)
+            {
+                if (y > maxy) break;
+                y += 0.5f;
+                //Debug.Log(y);
+                Vector3Int pos = terrainMap.WorldToCell(new Vector3(x - 0.5f, y - 0.5f, 0));
+                RasterTileExt(pos);
+
+
+            }
+
+        }
+        UpdateTileExts();
+    }
+    public void RasterTileExt(Vector3Int pos)
+    {
+
+        if (terrainTileExts.ContainsKey(pos))
+
+            terrainTileExts.Remove(pos);
+
+        if (hazardTileExts.ContainsKey(pos))
+
+            hazardTileExts.Remove(pos);
+
+        if (bgTileExts.ContainsKey(pos))
+
+            bgTileExts.Remove(pos);
+
     }
     public void PaintBlock(Vector3 start, Vector3 end, AutotilerPreset preset)
     {

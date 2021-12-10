@@ -31,6 +31,7 @@ public class RoomManager : MonoBehaviour
     float shakeDuration;
 
     Vector3 oldCameraPosition = Vector3.zero;
+    public bool active = true;
 
     private void Awake()
     {
@@ -40,8 +41,11 @@ public class RoomManager : MonoBehaviour
 
     void Start()
     {
+        
         oldCameraPosition.z = -10;
-        player = Player.i;
+        if (active){
+            player = Player.i;
+        }
         cam = Camera.main;
     }
 
@@ -52,6 +56,7 @@ public class RoomManager : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (active){
         shakeDuration--;
         if (shakeDuration == 0)
         {
@@ -124,6 +129,7 @@ public class RoomManager : MonoBehaviour
                         ref cvel,
                         cameraSmooth);
             }
+        }
         }
     }
 

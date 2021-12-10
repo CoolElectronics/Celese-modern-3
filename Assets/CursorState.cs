@@ -1,4 +1,5 @@
 public enum CursorState{
     Move,
-    Paint
+    Paint,
+    Raster
 }

@@ -74,7 +74,7 @@ public class TileExt
         //Debug.Log(selectedTile + " : " + r);
         if (selectedTile != null)
         {
-            if (con.requirementTile.Contains(selectedTile) || !con.requireSetTile)
+            if ((con.requirementTile.Contains(selectedTile) && !con.notSelf) || (!con.requireSetTile && !con.notSelf) || (con.notSelf && !con.requirementTile.Contains(selectedTile)))
             {
 
                 return true;

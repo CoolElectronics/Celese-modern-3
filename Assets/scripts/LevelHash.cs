@@ -10,4 +10,5 @@ public struct LevelHash
     public bool officialLevel;
     public string LevelID;
     public string extraPrefab;
+    public bool isLevelEditor;
 }

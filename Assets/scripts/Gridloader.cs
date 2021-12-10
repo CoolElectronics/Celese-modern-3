@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+
 using System;
 using System.Text;
 using System.IO;
@@ -32,12 +33,15 @@ public class Gridloader : MonoBehaviour
     [SerializeField]
     LayerMask roomLmPlayer;
 
-
+    [SerializeField]
+    GameObject editorContainer;
 
     public List<TileDefinition> tiles;
     public static Gridloader i;
 
     public bool saveLevelDebug = false;
+
+    public bool rasterRuleTilesInSelection = false;
     void Awake()
     {
         i = this;
@@ -64,9 +68,16 @@ public class Gridloader : MonoBehaviour
         MapData md = new MapData();
         string converted = Encoding.UTF8.GetString(System.Convert.FromBase64String(hash.leveldata));
         md = JsonUtility.FromJson<MapData>(converted);
-
-
-        GameObject GeneratedLevelContainer = Instantiate(levelContainerPrefab, Vector3.zero, Quaternion.identity);
+        GameObject GeneratedLevelContainer;
+        if (!hash.isLevelEditor)
+        {
+            GeneratedLevelContainer = Instantiate(levelContainerPrefab, Vector3.zero, Quaternion.identity);
+        }
+        else
+        {
+            GeneratedLevelContainer = editorContainer;
+            terrainmap.BoxFill(new Vector3Int(0, 0, 0), null, terrainmap.cellBounds.min.x, terrainmap.cellBounds.min.y, terrainmap.cellBounds.max.x, terrainmap.cellBounds.max.y);
+        }
         if (hash.officialLevel)
         {
             if (hash.extraPrefab != "")
@@ -137,6 +148,9 @@ public class Gridloader : MonoBehaviour
             string[] splitdata = tiledata.Split("|");
             string tilename = splitdata[0];
             TileBase tile = tiles.Find(def => def.name == tilename).tile;
+            if (tile == null){
+                Debug.Log(tilename + " was not found in database");
+            }
             Vector3Int tilepos = new Vector3Int(System.Int32.Parse(splitdata[2]), System.Int32.Parse(splitdata[3]), 0);
             Matrix4x4 tilematrix = Matrix4x4.Rotate(Quaternion.Euler(0, 0, float.Parse(splitdata[1])));
             terrainmap.SetTile(tilepos, tile);
@@ -147,6 +161,9 @@ public class Gridloader : MonoBehaviour
             string[] splitdata = tiledata.Split("|");
             string tilename = splitdata[0];
             TileBase tile = tiles.Find(def => def.name == tilename).tile;
+            if (tile == null){
+                Debug.Log(tilename + " was not found in database");
+            }
             Vector3Int tilepos = new Vector3Int(System.Int32.Parse(splitdata[2]), System.Int32.Parse(splitdata[3]), 0);
             Matrix4x4 tilematrix = Matrix4x4.Rotate(Quaternion.Euler(0, 0, float.Parse(splitdata[1])));
             hazardmap.SetTile(tilepos, tile);
@@ -157,6 +174,9 @@ public class Gridloader : MonoBehaviour
             string[] splitdata = tiledata.Split("|");
             string tilename = splitdata[0];
             TileBase tile = tiles.Find(def => def.name == tilename).tile;
+            if (tile == null){
+                Debug.Log(tilename + " was not found in database");
+            }
             Vector3Int tilepos = new Vector3Int(System.Int32.Parse(splitdata[2]), System.Int32.Parse(splitdata[3]), 0);
             Matrix4x4 tilematrix = Matrix4x4.Rotate(Quaternion.Euler(0, 0, float.Parse(splitdata[1])));
             bgmap.SetTile(tilepos, tile);

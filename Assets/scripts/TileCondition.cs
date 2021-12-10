@@ -7,6 +7,8 @@ using UnityEngine.UI;
 [System.Serializable]
 public struct TileCondition
 {
+    public bool notSelf;
+
     public bool requireSetTile;
     public List<TileBase> requirementTile;
     public Vector3Int offset;
