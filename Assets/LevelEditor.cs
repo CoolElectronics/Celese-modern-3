@@ -77,7 +77,7 @@ public class LevelEditor : MonoBehaviour
     [SerializeField]
     Button editObjectClose;
 
-    HierarchyObjectUIDefinition activeDef;
+    HierarchyObject activeHierarchyObject;
 
 
     public static LevelEditor i;
@@ -128,7 +128,7 @@ public class LevelEditor : MonoBehaviour
     void editObjectClosePressed()
     {
         editObjectPanel.SetActive(false);
-        activeDef.RemoveAll();
+        activeHierarchyObject.Deactivate();
     }
     void newObjectCreatePressed()
     {
@@ -150,7 +150,8 @@ public class LevelEditor : MonoBehaviour
         if (!editObjectPanel.activeSelf)
         {
             editObjectPanel.SetActive(true);
-            activeDef = hierarchyObject.definition;
+            activeHierarchyObject = hierarchyObject;
+            hierarchyObject.Activate();
         }
     }
     void closeCodeGuiPressed()

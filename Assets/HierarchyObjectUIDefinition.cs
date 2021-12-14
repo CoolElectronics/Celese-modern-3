@@ -15,6 +15,8 @@ public class HierarchyObjectUIDefinition
 {
 
     public List<TMP_InputField> inputFields = new List<TMP_InputField>();
+
+    public List<ExitDefinition> exits;
     public List<Toggle> checkboxes = new List<Toggle>();
     HierarchyObject linkedHierarchyObject;
 
@@ -23,18 +25,39 @@ public class HierarchyObjectUIDefinition
     public Vector2Int respawnDefault = Vector2Int.zero;
     public Vector2Int camboundsMinDefault = Vector2Int.zero;
     public Vector2Int camboundsMaxDefault = Vector2Int.zero;
+    public Vector2 pos = Vector2.zero;
 
 
 
-    public HierarchyObjectUIDefinition(int type, TMP_InputField x, TMP_InputField y, GameObject viewport, HierarchyObject obk)
+    float roomWidth = 18;
+    float roomHeight = 11;
+    public HierarchyObjectUIDefinition(){
+        
+    }
+    public void Initalize(int type, GameObject viewport, HierarchyObject obk)
     {
         linkedHierarchyObject = obk;
+
+
         switch (type)
         {
             case 0:
 
                 // everything is just js now
+                inputFields.Add(newInputField(viewport, "pos", pos.x + "," + pos.y, (val) =>
+                {
+                    string[] vals = val.Split(",");
+                    try
+                    {
+                        pos = new Vector2(int.Parse(vals[0]), int.Parse(vals[1]));
+                        linkedHierarchyObject.changePos(new Vector3(pos.x * roomWidth,pos.y * roomHeight,0));
+                    }
+                    catch
+                    {
+                        //haha yeah this is definitely how you write code
+                    }
 
+                }));
                 inputFields.Add(newInputField(viewport, "name", nameDefault, (val) =>
                 {
                     linkedHierarchyObject.ChangeName(val);
@@ -42,7 +65,21 @@ public class HierarchyObjectUIDefinition
 
                 inputFields.Add(newInputField(viewport, "exits", exitsDefault.ToString(), (val) =>
                 {
+                    try
+                    {
+                        int newExits = int.Parse(val);
+                        if (newExits > exitsDefault){
+                            for (int i = 0; i < newExits - exitsDefault; i++){
+                                exits.Add(new ExitDefinition(this,i + exitsDefault));
 
+                            }
+                        }else if (newExits < exitsDefault){
+                            
+                        }
+                        exitsDefault = newExits;
+                    }catch{
+
+                    }
                 }));
                 inputFields.Add(newInputField(viewport, "respawn", respawnDefault.x + "," + respawnDefault.y, (val) =>
                 {
@@ -54,7 +91,6 @@ public class HierarchyObjectUIDefinition
                     }
                     catch
                     {
-                        //haha yeah this is definitely how you write code
                     }
 
                 }));
@@ -65,7 +101,7 @@ public class HierarchyObjectUIDefinition
                     {
                         camboundsMinDefault = new Vector2Int(int.Parse(vals[0]), int.Parse(vals[1]));
                         camboundsMaxDefault = new Vector2Int(int.Parse(vals[2]), int.Parse(vals[3]));
-                        linkedHierarchyObject.ChangeCamBounds(camboundsMinDefault,camboundsMaxDefault);
+                        linkedHierarchyObject.ChangeCamBounds(camboundsMinDefault, camboundsMaxDefault);
                     }
                     catch
                     {
@@ -74,7 +110,7 @@ public class HierarchyObjectUIDefinition
                 break;
         }
     }
-    TMP_InputField newInputField(GameObject viewport, string name, string defaultValue, UnityEngine.Events.UnityAction<string> action)
+    public TMP_InputField newInputField(GameObject viewport, string name, string defaultValue, UnityEngine.Events.UnityAction<string> action)
     {
         GameObject fieldobj = LevelEditor.Instantiate(LevelEditor.i.InputValueHierachyUIComponent, Vector3.zero, Quaternion.identity);
         fieldobj.transform.SetParent(viewport.transform);

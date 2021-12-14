@@ -13,11 +13,15 @@ public class HierarchyObject : MonoBehaviour
     public HierarchyObjectUIDefinition definition;
 
     public Room room;
-    public void Initialize(int _type, GameObject editObjectPanel, GameObject _levelContainer)
+
+    GameObject editObjectPanel;
+    public void Initialize(int _type, GameObject _editObjectPanel, GameObject _levelContainer)
     {
         type = _type;
+        editObjectPanel = _editObjectPanel;
         levelContainer = _levelContainer;
-        definition = new HierarchyObjectUIDefinition(type, editObjectPanel.transform.GetChild(0).GetChild(0).GetComponent<TMP_InputField>(), editObjectPanel.transform.GetChild(1).GetChild(0).GetComponent<TMP_InputField>(), editObjectPanel.transform.GetChild(2).gameObject, this);
+        definition = new HierarchyObjectUIDefinition();
+        
         switch (type)
         {
             case 0:
@@ -37,11 +41,21 @@ public class HierarchyObject : MonoBehaviour
                 break;
         }
     }
+    public void Activate(){
+        definition.Initalize(type, editObjectPanel.transform.GetChild(0).gameObject, this);
+    }
+    public void Deactivate(){
+        definition.RemoveAll();
+    }
+    public void changePos(Vector3 pos){
+        room.transform.position = pos;
+    }
     public void ChangeRespawnDefault(Vector2Int respawnDefault)
     {
         if (room)
         {
             room.defaultRespawn = getRealPos(respawnDefault);
+            room.transform.GetChild(1).localPosition = getRealPos(respawnDefault);
         }
     }
     public void ChangeCamBounds(Vector2Int min, Vector2Int max)
@@ -57,8 +71,10 @@ public class HierarchyObject : MonoBehaviour
     public static Vector3 getRealPos(Vector2Int pos)
     {
 
-        Vector3 realPos = Gridloader.i.terrainmap.CellToWorld((Vector3Int)pos);
-        realPos += new Vector3(0.5f, 0.5f, 0);
+        Vector3 realPos = (Vector3Int)pos;
+
+        /// dont. even. ask.
+        realPos -= new Vector3(-0.25f, -0.25f, 0);
         return realPos;
     }
     public void ChangeName(string _name)

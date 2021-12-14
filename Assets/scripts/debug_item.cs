@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class debug_item : MonoBehaviour
 {
     void Awake()
     {
-        gameObject.SetActive(false);
+        if (SceneManager.GetActiveScene().name != "LevelMaker")
+            gameObject.SetActive(false);
     }
 }
