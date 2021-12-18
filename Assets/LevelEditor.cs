@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using TMPro;
 
+// don't touch. it works.
 public class LevelEditor : MonoBehaviour
 {
     [SerializeField]
@@ -83,6 +84,8 @@ public class LevelEditor : MonoBehaviour
     public static LevelEditor i;
     List<HierarchyObject> hierarchyObjects;
     
+    public GameObject transferPosPlayerPrefab;
+    public GameObject transitionBoxDisplay;
 
 
     void Awake()

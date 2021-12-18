@@ -54,7 +54,7 @@ MonoBehaviour:
     playerCoords: {x: 0, y: 0}
   lmPlayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   defaultRespawn: {x: 0, y: 0}
   scrollX: 0
   scrollY: 0

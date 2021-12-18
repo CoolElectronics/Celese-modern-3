@@ -16,9 +16,9 @@ public class HierarchyObjectUIDefinition
 
     public List<TMP_InputField> inputFields = new List<TMP_InputField>();
 
-    public List<ExitDefinition> exits;
+    public List<ExitDefinition> exits = new List<ExitDefinition>();
     public List<Toggle> checkboxes = new List<Toggle>();
-    HierarchyObject linkedHierarchyObject;
+    public HierarchyObject linkedHierarchyObject;
 
     public string nameDefault = "new room";
     public int exitsDefault = 0;
@@ -27,17 +27,18 @@ public class HierarchyObjectUIDefinition
     public Vector2Int camboundsMaxDefault = Vector2Int.zero;
     public Vector2 pos = Vector2.zero;
 
+    public GameObject viewport;
 
+    public float roomWidth = 18;
+    public float roomHeight = 11;
+    public HierarchyObjectUIDefinition()
+    {
 
-    float roomWidth = 18;
-    float roomHeight = 11;
-    public HierarchyObjectUIDefinition(){
-        
     }
-    public void Initalize(int type, GameObject viewport, HierarchyObject obk)
+    public void Initalize(int type, GameObject _viewport, HierarchyObject obk)
     {
         linkedHierarchyObject = obk;
-
+        viewport = _viewport;
 
         switch (type)
         {
@@ -50,7 +51,7 @@ public class HierarchyObjectUIDefinition
                     try
                     {
                         pos = new Vector2(int.Parse(vals[0]), int.Parse(vals[1]));
-                        linkedHierarchyObject.changePos(new Vector3(pos.x * roomWidth,pos.y * roomHeight,0));
+                        linkedHierarchyObject.changePos(new Vector3(pos.x * roomWidth, pos.y * roomHeight, 0));
                     }
                     catch
                     {
@@ -67,17 +68,31 @@ public class HierarchyObjectUIDefinition
                 {
                     try
                     {
-                        int newExits = int.Parse(val);
-                        if (newExits > exitsDefault){
-                            for (int i = 0; i < newExits - exitsDefault; i++){
-                                exits.Add(new ExitDefinition(this,i + exitsDefault));
+                        if (val != "")
+                        {
+                            int newExits = int.Parse(val);
 
+                            if (newExits > exitsDefault)
+                            {
+                                for (int i = 0; i < newExits - exitsDefault; i++)
+                                {
+                                    exits.Add(new ExitDefinition(this, i + exitsDefault));
+
+                                }
                             }
-                        }else if (newExits < exitsDefault){
-                            
+                            else if (newExits < exitsDefault)
+                            {
+                                for (int i = 0; i < exitsDefault - newExits; i++)
+                                {
+                                    exits[exits.Count - 1].Delete();
+                                    exits.Remove(exits[exits.Count - 1]);
+                                }
+                            }
+                            exitsDefault = newExits;
                         }
-                        exitsDefault = newExits;
-                    }catch{
+                    }
+                    catch
+                    {
 
                     }
                 }));
@@ -107,6 +122,10 @@ public class HierarchyObjectUIDefinition
                     {
                     }
                 }));
+                foreach (ExitDefinition exit in exits)
+                {
+                    exit.Regenerate();
+                }
                 break;
         }
     }
@@ -124,15 +143,21 @@ public class HierarchyObjectUIDefinition
     }
     public void RemoveAll()
     {
-        foreach (TMP_InputField field in inputFields)
+        foreach (ExitDefinition exit in exits)
+        {
+            exit.Hide();
+        }
+        foreach (TMP_InputField field in inputFields.ToArray())
         {
             field.onValueChanged.RemoveAllListeners();
             LevelEditor.Destroy(field.gameObject);
+            inputFields.Remove(field);
         }
-        foreach (Toggle toggle in checkboxes)
+        foreach (Toggle toggle in checkboxes.ToArray())
         {
             toggle.onValueChanged.RemoveAllListeners();
             LevelEditor.Destroy(toggle.gameObject);
+            checkboxes.Remove(toggle);
         }
     }
 }
