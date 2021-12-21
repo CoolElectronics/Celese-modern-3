@@ -37,6 +37,7 @@ public class HierarchyObject : MonoBehaviour
                 // room.minCamY = obj.minCamY;
                 // room.maxCamX = obj.maxCamX;
                 // room.maxCamY = obj.maxCamY;
+                LevelEditor.i.NewRoom(this);
                 room.transitionBoxes = new List<RoomTransitionBBox>();
                 break;
         }

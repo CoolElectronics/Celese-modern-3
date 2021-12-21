@@ -21,7 +21,7 @@ public class HierarchyObjectUIDefinition
     public HierarchyObject linkedHierarchyObject;
 
     public string nameDefault = "new room";
-    public int exitsDefault = 0;
+    public int exitsDefault = 4;
     public Vector2Int respawnDefault = Vector2Int.zero;
     public Vector2Int camboundsMinDefault = Vector2Int.zero;
     public Vector2Int camboundsMaxDefault = Vector2Int.zero;
@@ -31,6 +31,8 @@ public class HierarchyObjectUIDefinition
 
     public float roomWidth = 18;
     public float roomHeight = 11;
+
+    bool first = true;
     public HierarchyObjectUIDefinition()
     {
 
@@ -77,7 +79,6 @@ public class HierarchyObjectUIDefinition
                                 for (int i = 0; i < newExits - exitsDefault; i++)
                                 {
                                     exits.Add(new ExitDefinition(this, i + exitsDefault));
-
                                 }
                             }
                             else if (newExits < exitsDefault)
@@ -122,9 +123,53 @@ public class HierarchyObjectUIDefinition
                     {
                     }
                 }));
+
                 foreach (ExitDefinition exit in exits)
                 {
                     exit.Regenerate();
+                }
+                if (first)
+                {
+                    first = false;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        ExitDefinition def = new ExitDefinition(this, i);
+                        string v = "0,0";
+                        switch (i)
+                        {
+                            case 0:
+                                v = "17,0";
+                                break;
+                            case 1:
+                                v = "0,10";
+                                break;
+                            case 2:
+                                v = "-17,0";
+                                break;
+                            case 3:
+                                v = "0,-10";
+                                break;
+                        }
+                        def.fields[1].text = v;
+                        def.fields[2].text = (i % 2 == 0 ? "21" : "33") + ":" + i;
+                        switch (i)
+                        {
+                            case 0:
+                                v = "22,0";
+                                break;
+                            case 1:
+                                v = "0,14";
+                                break;
+                            case 2:
+                                v = "-22,0";
+                                break;
+                            case 3:
+                                v = "0,-14";
+                                break;
+                        }
+                        def.fields[3].text = v;
+                        exits.Add(def);
+                    }
                 }
                 break;
         }

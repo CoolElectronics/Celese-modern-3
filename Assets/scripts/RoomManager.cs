@@ -47,6 +47,12 @@ public class RoomManager : MonoBehaviour
             player = Player.i;
         }
         cam = Camera.main;
+
+        
+    }
+    public void LevelStart(){
+        Debug.Log(player);
+        player.transform.position = currentRoom.defaultRespawn;
     }
 
     // Update is called once per frame

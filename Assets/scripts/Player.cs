@@ -37,10 +37,13 @@ public class Player : MonoBehaviour
     playerMovement movement;
 
     bool crouched = false;
+    void Awake(){
+
+        i = this;
+    }
 
     void Start()
     {
-        i = this;
         rb = GetComponent<Rigidbody2D>();
         movement = GetComponent<playerMovement>();
     }

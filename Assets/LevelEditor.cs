@@ -86,7 +86,7 @@ public class LevelEditor : MonoBehaviour
     
     public GameObject transferPosPlayerPrefab;
     public GameObject transitionBoxDisplay;
-
+    public Room mainRoom;
 
     void Awake()
     {
@@ -113,12 +113,18 @@ public class LevelEditor : MonoBehaviour
             preset.button.onClick.AddListener(() => selectedAutotiler(preset));
         }
     }
+    public void NewRoom(HierarchyObject r){
+        if (mainRoom == null){
+            mainRoom = r.room;
+            roomManager.currentRoom = r.room;
+        }
+    }
     void loadPressed()
     {
         LevelHash hash = new LevelHash();
         hash.isLevelEditor = true;
         hash.leveldata = levelCodeText.text;
-        Gridloader.i.LoadLevel(hash);
+        Gridloader.i.LoadLevelEditor(hash);
     }
     void newObjectButtonPressed()
     {
@@ -179,8 +185,10 @@ public class LevelEditor : MonoBehaviour
             {
 
                 player = Instantiate(playerPrefab, transform.position, Quaternion.identity).GetComponent<Player>();
+                roomManager.currentRoom = mainRoom;
                 roomManager.active = true;
                 roomManager.player = player;
+                player.transform.position = mainRoom.currentRespawn;
             }
             play.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "stop";
             playing = true;

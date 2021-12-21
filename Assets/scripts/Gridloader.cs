@@ -42,6 +42,9 @@ public class Gridloader : MonoBehaviour
     public bool saveLevelDebug = false;
 
     public bool rasterRuleTilesInSelection = false;
+
+
+    Room mainRoom = null;
     void Awake()
     {
         i = this;
@@ -136,6 +139,9 @@ public class Gridloader : MonoBehaviour
                         StartCoroutine(RetryBoxFind(room, box, serializablebox.transferTo));
                     }
                 }
+                if (mainRoom == null){
+                    mainRoom = room;
+                }
             }
             else
             {
@@ -182,11 +188,15 @@ public class Gridloader : MonoBehaviour
             bgmap.SetTile(tilepos, tile);
             bgmap.SetTransformMatrix(tilepos, tilematrix);
         }
-
+        RoomManager.i.currentRoom = mainRoom;
+        RoomManager.i.player = Player.i;
+        Debug.Log(Player.i);
+        Debug.Log(RoomManager.i.player);
+        RoomManager.i.LevelStart();
     }
     IEnumerator RetryBoxFind(Room room, RoomTransitionBBox box, string transferTo)
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         GameObject transferToRes = GameObject.Find(transferTo);
         if (transferToRes)
         {

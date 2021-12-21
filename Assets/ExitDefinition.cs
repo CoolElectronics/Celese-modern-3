@@ -90,7 +90,7 @@ public class ExitDefinition
            string[] vals = val.Split(",");
            try
            {
-               box.pos = new Vector2(int.Parse(vals[0]) + 0.5f, int.Parse(vals[1]) + 0.5f);
+               box.pos = new Vector2(float.Parse(vals[0]) / 2, float.Parse(vals[1]) / 2);
                transitionBoxDisplay.transform.position = box.pos + (Vector2)room.transform.position;
            }
            catch
@@ -103,7 +103,7 @@ public class ExitDefinition
            string[] vals = val.Split(":");
            try
            {
-               Vector3 size = Quaternion.Euler(0,0,90 * int.Parse(vals[1])) * new Vector3(transitionBoxWidth,int.Parse(vals[0]),1);;
+               Vector3 size = Quaternion.Euler(0,0,90 * float.Parse(vals[1])) * new Vector3(transitionBoxWidth,float.Parse(vals[0]) / 2,1);
             box.size = size;
             transitionBoxDisplay.transform.localScale = size;
            }catch{}
@@ -114,7 +114,7 @@ public class ExitDefinition
            string[] vals = val.Split(",");
            try
            {
-               box.playerCoords = box.pos + new Vector2(int.Parse(vals[0]), int.Parse(vals[1]));
+               box.playerCoords = (Vector2)room.transform.position + new Vector2(float.Parse(vals[0])/ 2, float.Parse(vals[1]) / 2);
                transferPosPlayer.transform.position = box.playerCoords;
            }
            catch
