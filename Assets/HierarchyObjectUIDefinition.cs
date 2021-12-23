@@ -21,7 +21,7 @@ public class HierarchyObjectUIDefinition
     public HierarchyObject linkedHierarchyObject;
 
     public string nameDefault = "new room";
-    public int exitsDefault = 4;
+    public int exitsDefault = 0;
     public Vector2Int respawnDefault = Vector2Int.zero;
     public Vector2Int camboundsMinDefault = Vector2Int.zero;
     public Vector2Int camboundsMaxDefault = Vector2Int.zero;
@@ -29,19 +29,22 @@ public class HierarchyObjectUIDefinition
 
     public GameObject viewport;
 
-    public float roomWidth = 18;
-    public float roomHeight = 11;
+    public static float roomWidth = 18;
+    public static float roomHeight = 11;
 
     bool first = true;
     public HierarchyObjectUIDefinition()
     {
 
     }
-    public void Initalize(int type, GameObject _viewport, HierarchyObject obk)
+    public void Initalize(int type, GameObject _viewport, HierarchyObject obk, bool disablePrefill = false)
     {
         linkedHierarchyObject = obk;
         viewport = _viewport;
-
+        if (!disablePrefill){
+            exitsDefault = 4;
+        }
+        Debug.Log("initailizasce caled");
         switch (type)
         {
             case 0:
@@ -63,6 +66,7 @@ public class HierarchyObjectUIDefinition
                 }));
                 inputFields.Add(newInputField(viewport, "name", nameDefault, (val) =>
                 {
+                    nameDefault = val;
                     linkedHierarchyObject.ChangeName(val);
                 }));
 
@@ -128,7 +132,7 @@ public class HierarchyObjectUIDefinition
                 {
                     exit.Regenerate();
                 }
-                if (first)
+                if (first && !disablePrefill)
                 {
                     first = false;
                     for (int i = 0; i < 4; i++)

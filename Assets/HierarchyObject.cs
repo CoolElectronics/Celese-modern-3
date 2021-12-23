@@ -13,13 +13,15 @@ public class HierarchyObject : MonoBehaviour
     public HierarchyObjectUIDefinition definition;
 
     public Room room;
+    bool disablePrefill = false;
 
     GameObject editObjectPanel;
-    public void Initialize(int _type, GameObject _editObjectPanel, GameObject _levelContainer)
+    public void Initialize(int _type, GameObject _editObjectPanel, GameObject _levelContainer, bool _disablePrefill = false)
     {
         type = _type;
         editObjectPanel = _editObjectPanel;
         levelContainer = _levelContainer;
+        disablePrefill = _disablePrefill;
         definition = new HierarchyObjectUIDefinition();
         
         switch (type)
@@ -43,7 +45,7 @@ public class HierarchyObject : MonoBehaviour
         }
     }
     public void Activate(){
-        definition.Initalize(type, editObjectPanel.transform.GetChild(0).gameObject, this);
+        definition.Initalize(type, editObjectPanel.transform.GetChild(0).gameObject, this,disablePrefill);
     }
     public void Deactivate(){
         definition.RemoveAll();
@@ -77,6 +79,16 @@ public class HierarchyObject : MonoBehaviour
         /// dont. even. ask.
         realPos -= new Vector3(-0.25f, -0.25f, 0);
         return realPos;
+    }
+    public static Vector2Int getFakePos(Vector3 pos)
+    {
+
+        
+        Vector3 realPos = pos;
+        /// i don't even know whats going on anymore. should i comment my code better than this? Should comments really be used to understand previous code and not just as a permanent live record of my rapidly declining sanity?
+        realPos -= new Vector3(-0.25f, -0.25f, 0);
+        Vector2Int fakePos = new Vector2Int((int)realPos.x,(int)realPos.y);
+        return fakePos;
     }
     public void ChangeName(string _name)
     {

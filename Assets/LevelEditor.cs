@@ -124,7 +124,7 @@ public class LevelEditor : MonoBehaviour
         LevelHash hash = new LevelHash();
         hash.isLevelEditor = true;
         hash.leveldata = levelCodeText.text;
-        Gridloader.i.LoadLevelEditor(hash);
+        Gridloader.i.LoadLevel(hash);
     }
     void newObjectButtonPressed()
     {
@@ -152,6 +152,43 @@ public class LevelEditor : MonoBehaviour
         hierarchyObjects.Add(hierarchyObj);
 
 
+
+    }
+
+    public void MakeRoom(string name, Vector3 pos, Vector2 defaultRespawn, bool lockXscroll, bool sx, bool sy, float mcx,float mcy,float Mcx, float Mcy, List<RoomTransitionBBoxSerializable> boxes){
+        HierarchyObject hierarchyObj = Instantiate(HierarchyObjectPrefab, Vector3.zero, Quaternion.identity).GetComponent<HierarchyObject>();
+        hierarchyObj.Initialize(0,editObjectPanel,levelContainer, true);
+        hierarchyObj.transform.SetParent(hierarchyPanel.transform.GetChild(0).GetChild(0));
+        hierarchyObj.transform.localScale = Vector3.one;
+        hierarchyObj.GetComponent<RectTransform>().localPosition = Vector3.zero;
+        hierarchyObj.GetComponent<Button>().onClick.AddListener(() => { hierarchyObjButtonPressed(hierarchyObj); });
+        hierarchyObjects.Add(hierarchyObj);
+
+        HierarchyObjectUIDefinition def = hierarchyObj.definition;
+        hierarchyObj.Activate();
+        def.inputFields[0].text = pos.x / HierarchyObjectUIDefinition.roomWidth + "," + pos.y / HierarchyObjectUIDefinition.roomHeight;
+        def.inputFields[1].text = name;
+        def.inputFields[2].text = boxes.Count.ToString();
+        def.inputFields[3].text = defaultRespawn.x + "," + defaultRespawn.y;
+        Vector2Int m = HierarchyObject.getFakePos(new Vector3(mcx,mcy,0));
+        Vector2Int M = HierarchyObject.getFakePos(new Vector3(Mcx,Mcy,0));
+
+        //help
+        def.inputFields[4].text = m.x + "," + m.y + "," + M.x + "," + M.y;
+        for (int i = 0; i < boxes.Count;  i++){
+            ExitDefinition exit = def.exits[i];
+            exit.fields[0].text = boxes[i].transferTo;
+            exit.fields[1].text = boxes[i].posx * 2 + "," + boxes[i].posy * 2;
+            if (boxes[i].sizex > boxes[i].sizey){
+                exit.fields[2].text = boxes[i].sizex + ":1";
+            }else{
+                exit.fields[2].text = boxes[i].sizey + ":0";
+            }
+            exit.fields[3].text = (boxes[i].playerCoordsx * 2 - hierarchyObj.room.transform.position.x) + "," + (boxes[i].playerCoordsy * 2 - hierarchyObj.room.transform.position.y);
+
+        }
+
+        hierarchyObj.Deactivate();
 
     }
     void hierarchyObjButtonPressed(HierarchyObject hierarchyObject)

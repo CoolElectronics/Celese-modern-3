@@ -106,41 +106,49 @@ public class Gridloader : MonoBehaviour
             }
             else if (obj.type == "Room")
             {
-                Debug.Log("Constructing RoomObject");
-                GameObject instantiated = Instantiate(roomPrefab, GeneratedLevelContainer.transform);
-                instantiated.name = obj.name;
-                instantiated.transform.position = new Vector3(obj.positionx, obj.positiony, 0);
-                Room room = instantiated.GetComponent<Room>();
-                room.defaultRespawn = new Vector2(obj.defaultrespawnx, obj.defaultrespawny);
-                room.lockXscroll = obj.lockXscroll;
-                room.scrollX = obj.scrollX;
-                room.scrollY = obj.scrollY;
-                room.minCamX = obj.minCamX;
-                room.minCamY = obj.minCamY;
-                room.maxCamX = obj.maxCamX;
-                room.maxCamY = obj.maxCamY;
-                room.lmPlayer = roomLmPlayer;
-                room.transitionBoxes = new List<RoomTransitionBBox>();
-                foreach (RoomTransitionBBoxSerializable serializablebox in obj.transitionBoxes)
+                if (hash.isLevelEditor)
                 {
-                    RoomTransitionBBox box = new RoomTransitionBBox();
-                    box.playerCoords = new Vector2(serializablebox.playerCoordsx, serializablebox.playerCoordsy);
-                    box.pos = new Vector2(serializablebox.posx, serializablebox.posy);
-                    box.size = new Vector2(serializablebox.sizex, serializablebox.sizey);
-                    GameObject transferTo = GameObject.Find(serializablebox.transferTo);
-                    if (transferTo)
-                    {
-                        box.transferTo = transferTo.GetComponent<Room>();
-                        room.transitionBoxes.Add(box);
-                    }
-                    else
-                    {
-                        Debug.Log("Failed to find transitionbox " + serializablebox.transferTo + ". Retrying in 0.5s");
-                        StartCoroutine(RetryBoxFind(room, box, serializablebox.transferTo));
-                    }
+                    LevelEditor.i.MakeRoom(obj.name,new Vector3(obj.positionx, obj.positiony, 0),new Vector2(obj.defaultrespawnx, obj.defaultrespawny),obj.lockXscroll,obj.scrollX,obj.scrollY,obj.minCamX,obj.minCamY,obj.maxCamX,obj.maxCamY,obj.transitionBoxes);
                 }
-                if (mainRoom == null){
-                    mainRoom = room;
+                else
+                {
+                    Debug.Log("Constructing RoomObject");
+                    GameObject instantiated = Instantiate(roomPrefab, GeneratedLevelContainer.transform);
+                    instantiated.name = obj.name;
+                    instantiated.transform.position = new Vector3(obj.positionx, obj.positiony, 0);
+                    Room room = instantiated.GetComponent<Room>();
+                    room.defaultRespawn = new Vector2(obj.defaultrespawnx, obj.defaultrespawny);
+                    room.lockXscroll = obj.lockXscroll;
+                    room.scrollX = obj.scrollX;
+                    room.scrollY = obj.scrollY;
+                    room.minCamX = obj.minCamX;
+                    room.minCamY = obj.minCamY;
+                    room.maxCamX = obj.maxCamX;
+                    room.maxCamY = obj.maxCamY;
+                    room.lmPlayer = roomLmPlayer;
+                    room.transitionBoxes = new List<RoomTransitionBBox>();
+                    foreach (RoomTransitionBBoxSerializable serializablebox in obj.transitionBoxes)
+                    {
+                        RoomTransitionBBox box = new RoomTransitionBBox();
+                        box.playerCoords = new Vector2(serializablebox.playerCoordsx, serializablebox.playerCoordsy);
+                        box.pos = new Vector2(serializablebox.posx, serializablebox.posy);
+                        box.size = new Vector2(serializablebox.sizex, serializablebox.sizey);
+                        GameObject transferTo = GameObject.Find(serializablebox.transferTo);
+                        if (transferTo)
+                        {
+                            box.transferTo = transferTo.GetComponent<Room>();
+                            room.transitionBoxes.Add(box);
+                        }
+                        else
+                        {
+                            Debug.Log("Failed to find transitionbox " + serializablebox.transferTo + ". Retrying in 0.5s");
+                            StartCoroutine(RetryBoxFind(room, box, serializablebox.transferTo));
+                        }
+                    }
+                    if (mainRoom == null)
+                    {
+                        mainRoom = room;
+                    }
                 }
             }
             else
@@ -154,7 +162,8 @@ public class Gridloader : MonoBehaviour
             string[] splitdata = tiledata.Split("|");
             string tilename = splitdata[0];
             TileBase tile = tiles.Find(def => def.name == tilename).tile;
-            if (tile == null){
+            if (tile == null)
+            {
                 Debug.Log(tilename + " was not found in database");
             }
             Vector3Int tilepos = new Vector3Int(System.Int32.Parse(splitdata[2]), System.Int32.Parse(splitdata[3]), 0);
@@ -167,7 +176,8 @@ public class Gridloader : MonoBehaviour
             string[] splitdata = tiledata.Split("|");
             string tilename = splitdata[0];
             TileBase tile = tiles.Find(def => def.name == tilename).tile;
-            if (tile == null){
+            if (tile == null)
+            {
                 Debug.Log(tilename + " was not found in database");
             }
             Vector3Int tilepos = new Vector3Int(System.Int32.Parse(splitdata[2]), System.Int32.Parse(splitdata[3]), 0);
@@ -180,7 +190,8 @@ public class Gridloader : MonoBehaviour
             string[] splitdata = tiledata.Split("|");
             string tilename = splitdata[0];
             TileBase tile = tiles.Find(def => def.name == tilename).tile;
-            if (tile == null){
+            if (tile == null)
+            {
                 Debug.Log(tilename + " was not found in database");
             }
             Vector3Int tilepos = new Vector3Int(System.Int32.Parse(splitdata[2]), System.Int32.Parse(splitdata[3]), 0);

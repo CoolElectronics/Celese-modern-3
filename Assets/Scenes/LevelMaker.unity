@@ -18536,6 +18536,7 @@ MonoBehaviour:
   editObjectClose: {fileID: 2078411629}
   transferPosPlayerPrefab: {fileID: 4440796291216508072, guid: f5d158d7d4afe678a8f495e238056975, type: 3}
   transitionBoxDisplay: {fileID: 5391004445609246198, guid: 275317f9ca7f1164787790c3b4b7157c, type: 3}
+  mainRoom: {fileID: 0}
 --- !u!114 &1878426318
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20548,6 +20549,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2916680585876900193, guid: d275bde972f0e7412a47c927ea114129, type: 3}
+      propertyPath: editorContainer
+      value: 
+      objectReference: {fileID: 225027949}
     - target: {fileID: 2916680585876900194, guid: d275bde972f0e7412a47c927ea114129, type: 3}
       propertyPath: m_RootOrder
       value: 7
