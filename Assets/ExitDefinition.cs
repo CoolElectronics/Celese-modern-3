@@ -47,6 +47,8 @@ public class ExitDefinition
             Debug.Log("destruoyed");
             LevelEditor.Destroy(field.gameObject);
         }
+        source.linkedHierarchyObject.room.transitionBoxes.Remove(box);
+        
         LevelEditor.Destroy(transitionBoxDisplay);
         LevelEditor.Destroy(transferPosPlayer);
     }

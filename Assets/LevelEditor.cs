@@ -177,7 +177,8 @@ public class LevelEditor : MonoBehaviour
         def.inputFields[4].text = m.x + "," + m.y + "," + M.x + "," + M.y;
         for (int i = 0; i < boxes.Count;  i++){
             ExitDefinition exit = def.exits[i];
-            exit.fields[0].text = boxes[i].transferTo;
+            StartCoroutine(SetDestination(hierarchyObj,i,boxes[i].transferTo));
+
             exit.fields[1].text = boxes[i].posx * 2 + "," + boxes[i].posy * 2;
             if (boxes[i].sizex > boxes[i].sizey){
                 exit.fields[2].text = boxes[i].sizex + ":1";
@@ -189,6 +190,14 @@ public class LevelEditor : MonoBehaviour
         }
 
         hierarchyObj.Deactivate();
+
+    }
+    IEnumerator SetDestination(HierarchyObject obj,int index,string name){
+        yield return new WaitForSeconds(0.5f);
+        obj.Activate();
+        Debug.Log("setting dest");
+        obj.definition.exits[index].fields[0].text = name;
+        obj.Deactivate();
 
     }
     void hierarchyObjButtonPressed(HierarchyObject hierarchyObject)

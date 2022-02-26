@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Player : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     float maxDeathAnimPushVariation;
+    [SerializeField]
+    float dotThreshold;
 
     [SerializeField]
     GameObject dedParticles;
@@ -33,11 +36,16 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     GameObject sprite_1;
+    [SerializeField]
+    TileBase crumblingTile;
 
     playerMovement movement;
 
     bool crouched = false;
-    void Awake(){
+
+    List<Vector3Int> crumbledTiles = new List<Vector3Int>();
+    void Awake()
+    {
 
         i = this;
     }
@@ -87,30 +95,53 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnCollisionStay2D(Collision2D col)
+    private void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.layer == 7 && !dead)
         {
-            RoomManager.i.Shake(0.3f, 2, 10);
+            Tilemap hmap = NewCameraController.i.hazardMap;
 
-            GetComponent<playerMovement>().enabled = false;
-            rb.gravityScale = 0;
-            dead = true;
-            Vector2 normal = col.contacts[0].normal.normalized;
-            float variation =
-                Random
-                    .Range(minDeathAnimPushVariation,
-                    maxDeathAnimPushVariation);
-            float dir = Mathf.Atan2(normal.y, normal.x) + variation;
 
-            rb.velocity =
-                new Vector2(Mathf.Cos(dir), Mathf.Sin(dir)) * deathAnimVel;
-            Invoke("DeathAnimStage2", deathAnimPushTime);
+            TileBase tile = hmap.GetTile(hmap.WorldToCell(col.contacts[0].point));
+            Vector2 direction = Vector2.zero;
+            switch (tile.name)
+            {
+                case "spikesU":
+                    direction = Vector2.up;
+                    break;
+                case "spikesD":
+                    direction = Vector2.down;
+                    break;
+                case "spikesL":
+                    direction = Vector2.left;
+                    break;
+                case "spikesR":
+                    direction = Vector2.right;
+                    break;
+            }
+            if (Vector2.Dot(rb.velocity, direction) < dotThreshold)
+            {
+                Vector2 normal = col.contacts[0].normal;
+                Kill(normal);
 
-            GameObject deathParticles = Instantiate(dedParticles, transform);
-            deathParticles.transform.rotation =
-                Quaternion.Euler(0, 0, variation);
-            Destroy(deathParticles, 3f);
+            }
+        }
+    }
+    private void OnCollisionStay2D(Collision2D col)
+    {
+        Tilemap hmap = NewCameraController.i.terrainMap;
+        foreach (ContactPoint2D contact in col.contacts)
+        {
+            Vector3Int tilepos = hmap.WorldToCell(contact.point - contact.normal / 2);
+            TileBase tile = hmap.GetTile(tilepos);
+            if (tile != null)
+            {
+                if (tile.name == "crumbling0")
+                {
+                    this.Invoke(() => { crumbledTiles.Add(tilepos); hmap.SetTile(tilepos, null); }, 0.2f);
+
+                }
+            }
         }
     }
 
@@ -123,11 +154,38 @@ public class Player : MonoBehaviour
 
     void Respawn()
     {
-        Vector2 respawnPoint = RoomManager.i.currentRoom.currentRespawn;
-        transform.position = respawnPoint;
+        Tilemap hmap = NewCameraController.i.terrainMap;
+        foreach (Vector3Int tile in crumbledTiles)
+        {
+            hmap.SetTile(tile, crumblingTile);
+        }
+        NewCameraController.i.RespawnPlayer();
         GetComponent<playerMovement>().enabled = true;
+        NewCameraController.i.blockStateUpdateEvent(0);
 
         //GetComponent<SpriteRenderer>().enabled = true;
         dead = false;
+    }
+    public void Kill(Vector3 normal)
+    {
+        NewCameraController.i.Shake(0.3f, 2, 10);
+
+        GetComponent<playerMovement>().enabled = false;
+        rb.gravityScale = 0;
+        dead = true;
+        float variation =
+            Random
+                .Range(minDeathAnimPushVariation,
+                maxDeathAnimPushVariation);
+        float dir = Mathf.Atan2(normal.y, normal.x) + variation;
+
+        rb.velocity =
+            new Vector2(Mathf.Cos(dir), Mathf.Sin(dir)) * deathAnimVel;
+        Invoke("DeathAnimStage2", deathAnimPushTime);
+
+        GameObject deathParticles = Instantiate(dedParticles, transform.position, Quaternion.identity);
+        deathParticles.transform.rotation =
+            Quaternion.Euler(0, 0, variation);
+        Destroy(deathParticles, 3f);
     }
 }

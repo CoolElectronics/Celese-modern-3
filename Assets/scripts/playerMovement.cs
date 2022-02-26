@@ -70,6 +70,10 @@ public class playerMovement : MonoBehaviour
 
     [SerializeField]
     float airdeccelerate = 0;
+    [SerializeField]
+    float maxFallSpeed = 0;
+    [SerializeField]
+    float maxSlideSpeed = 0;
 
     [SerializeField]
     float jumpVel;
@@ -150,7 +154,7 @@ public class playerMovement : MonoBehaviour
 
     bool haltMomentum = false;
 
-    bool dashing = false;
+    public bool dashing = false;
 
     bool wallSliding = false;
 
@@ -182,7 +186,7 @@ public class playerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        SetSprite (sprite);
+        SetSprite(sprite);
         InvokeRepeating("DrawTrail", 1f, trailFrequency);
     }
 
@@ -198,6 +202,7 @@ public class playerMovement : MonoBehaviour
         jumpHangGraceTicks -= 1;
         groundRegisterGraceTicks -= 1;
         jumpCooldown -= 1;
+
 
         float horizontal = 0;
         if (LArrowPressed)
@@ -221,8 +226,8 @@ public class playerMovement : MonoBehaviour
             }
         }
         Vector2 GBoxColliderPos =
-            (Vector2) transform.position + (Vector2) gBoxPos;
-        Vector2 GBoxColliderScale = (Vector2) gBoxSize;
+            (Vector2)transform.position + (Vector2)gBoxPos;
+        Vector2 GBoxColliderScale = (Vector2)gBoxSize;
         Collider2D[] results = new Collider2D[0];
 
         isGrounded = false;
@@ -238,7 +243,7 @@ public class playerMovement : MonoBehaviour
         }
 
         Vector2 WallStickColliderPos =
-            (Vector2) transform.position + new Vector2(0, 0.05f);
+            (Vector2)transform.position + new Vector2(0, 0.05f);
         Vector2 WallStickColliderScale =
             new Vector2(wallJumpColliderLen, -0.2f);
         bool isWallStuck = false;
@@ -253,6 +258,7 @@ public class playerMovement : MonoBehaviour
             if (!result.isTrigger)
             {
                 isWallStuck = true;
+
             }
         }
 
@@ -261,6 +267,19 @@ public class playerMovement : MonoBehaviour
 
         float newXvel = xvel;
         float newYvel = yvel;
+
+        // if (rb.velocity.y > maxFallSpeed)
+        // {
+        //     newYvel = maxFallSpeed;
+        // }
+        if (rb.velocity.y < -maxFallSpeed)
+        {
+            newYvel = -maxFallSpeed;
+        }
+        if (rb.velocity.y < -maxSlideSpeed && wallSliding)
+        {
+            newYvel = -maxSlideSpeed;
+        }
 
         if (isGrounded)
         {
@@ -301,8 +320,8 @@ public class playerMovement : MonoBehaviour
             if (horizontal != 0)
             {
                 if (
-                    (horizontal > 0 && wallJumpedRight) ||
-                    (horizontal < 0 && wallJumpedLeft)
+                    (horizontal < 0 && wallJumpedRight) ||
+                    (horizontal > 0 && wallJumpedLeft)
                 )
                 {
                     horizontal *= superWallJumpAccelDampening;
@@ -367,6 +386,7 @@ public class playerMovement : MonoBehaviour
             if (dashes > 0 && dashAvailable)
             {
                 dashes--;
+                NewCameraController.i.Shake(0.1f, 1, 3);
 
                 isGrounded = false;
                 Vector2 dashDir = new Vector2(0, 0);
@@ -408,19 +428,6 @@ public class playerMovement : MonoBehaviour
                 Invoke("restoreDash", dashEndTime);
             }
         }
-        if (haltMomentum)
-        {
-            if (preserveMomentum)
-            {
-                preserveMomentum = false;
-            }
-            else
-            {
-                newXvel = newXvel - newXvel / dashEndDampening;
-                newYvel = newYvel - newYvel / dashEndDampening;
-            }
-            haltMomentum = false;
-        }
         if (ZUnpressed)
         {
             if (rb.velocity.y > 0)
@@ -435,35 +442,15 @@ public class playerMovement : MonoBehaviour
                 Physics2D
                     .Raycast(transform.position,
                     new Vector2(1, 0),
-                    (transform.localScale.x + wallJumpColliderLen),
+                    wallJumpColliderLen,
                     lmWallStick);
             RaycastHit2D hit2 =
                 Physics2D
                     .Raycast(transform.position,
                     new Vector2(-1, 0),
-                    (transform.localScale.x + wallJumpColliderLen),
+                     wallJumpColliderLen,
                     lmWallStick);
-            if (hit1.collider != null && hit2.collider != null)
-            {
-                if (LArrowPressed || RArrowPressed)
-                {
-                    if (wallSliding == false)
-                    {
-                        wallSliding = true;
-                        newYvel = 0;
-                    }
-                }
-                else
-                {
-                    wallSliding = false;
-                }
-
-                if (jumpHangGraceTicks > 0)
-                {
-                    newYvel = jumpVel;
-                }
-            }
-            else if (hit1.collider != null)
+            if (hit1.collider != null)
             {
                 if (jumpHangGraceTicks > 0)
                 {
@@ -474,6 +461,7 @@ public class playerMovement : MonoBehaviour
                     haltMomentum = false;
                     isGrounded = false;
                     wallSliding = false;
+
                     isWallStuck = false;
 
                     wallJumpedLeft = true;
@@ -499,7 +487,6 @@ public class playerMovement : MonoBehaviour
                     )
                     {
                         wallSliding = true;
-                        newYvel = 0;
                     }
                 }
                 else
@@ -543,7 +530,6 @@ public class playerMovement : MonoBehaviour
                     )
                     {
                         wallSliding = true;
-                        newYvel = 0;
                     }
                 }
                 else
@@ -560,7 +546,28 @@ public class playerMovement : MonoBehaviour
         {
             wallSliding = false;
         }
-
+        if (dashing && wallSliding)
+        {
+            Debug.Log("attempting to cancel dash");
+            CancelInvoke("restoreDash");
+            restoreDash();
+            rb.gravityScale = normalGrav;
+            rb.velocity = Vector2.zero;
+        }
+        if (haltMomentum)
+        {
+            if (preserveMomentum)
+            {
+                preserveMomentum = false;
+            }
+            else
+            {
+                Debug.Log("halting momentum");
+                newXvel = newXvel - newXvel / dashEndDampening;
+                newYvel = newYvel - newYvel / dashEndDampening;
+            }
+            haltMomentum = false;
+        }
         HandleGravity();
 
         //set the new velocity
@@ -597,11 +604,11 @@ public class playerMovement : MonoBehaviour
 
         if (dashes == 0)
         {
-            SetSprite (sprite);
+            SetSprite(sprite);
         }
         else if (dashes == 1)
         {
-            SetSprite (sprite_1);
+            SetSprite(sprite_1);
         }
         else if (dashes > 1)
         {
@@ -664,7 +671,7 @@ public class playerMovement : MonoBehaviour
         }
         else if (wallSliding)
         {
-            rb.gravityScale = slidingGrav;
+            // rb.gravityScale = slidingGrav;
         }
         else
         {
