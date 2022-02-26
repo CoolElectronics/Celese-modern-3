@@ -127,6 +127,19 @@ public class Player : MonoBehaviour
             }
         }
     }
+    private void OnTriggerStay2D(Collider2D col)
+    {
+        Debug.Log(col.tag);
+        if (col.tag == "Battery")
+        {
+            if (movement.dashes != movement.maxDashCount)
+            {
+                col.gameObject.SetActive(false);
+                this.Invoke(() => col.gameObject.SetActive(true), 1);
+                movement.dashes = movement.maxDashCount;
+            }
+        }
+    }
     private void OnCollisionStay2D(Collision2D col)
     {
         Tilemap hmap = NewCameraController.i.terrainMap;

@@ -616,18 +616,6 @@ public class playerMovement : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col.tag == "Battery")
-        {
-            if (dashes != maxDashCount)
-            {
-                col.gameObject.SetActive(false);
-                StartCoroutine(RespawnCrystal(col.gameObject));
-                dashes = maxDashCount;
-            }
-        }
-    }
 
     void DrawTrail()
     {
@@ -699,11 +687,5 @@ public class playerMovement : MonoBehaviour
 
         activeSprite = _sprite;
         activeSprite.SetActive(true);
-    }
-
-    IEnumerator RespawnCrystal(GameObject go)
-    {
-        yield return new WaitForSeconds(3f);
-        go.SetActive(true);
     }
 }

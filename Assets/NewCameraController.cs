@@ -40,9 +40,10 @@ public class NewCameraController : MonoBehaviour
     Vector3 oldCameraPosition;
     bool shakeactive = false;
 
+    [SerializeField]
+    TMPro.TextMeshProUGUI timertext;
 
-
-
+    private System.Diagnostics.Stopwatch watch;
     public delegate void UpdateBlockState(int newstate);
     public UpdateBlockState blockStateUpdateEvent;
     void Awake()
@@ -52,6 +53,9 @@ public class NewCameraController : MonoBehaviour
     }
     void Start()
     {
+        watch = new System.Diagnostics.Stopwatch();
+        watch.Start();
+
         cam = Camera.main;
         if (playerpos.activeInHierarchy)
         {
@@ -83,6 +87,7 @@ public class NewCameraController : MonoBehaviour
 
     void FixedUpdate()
     {
+        timertext.text = TimeFormat(watch.Elapsed);
         if (target.transform.position.y > (pos.y * screenHeight) - 0.5 + screenHeight / 2)
         {
             pos.y++;
@@ -155,5 +160,30 @@ public class NewCameraController : MonoBehaviour
         shakeFreq = _freq;
         shakeDuration = _duration;
         shakeFreqTimer = _freq;
+    }
+    string TimeFormat(System.TimeSpan time)
+    {
+        string clock = "";
+
+        if (time.Minutes < 10)
+        {
+            clock += "0";
+        }
+        clock += time.Minutes;
+        clock += ":";
+        if (time.Seconds < 10)
+        {
+            clock += "0";
+        }
+        clock += time.Seconds;
+        clock += ".";
+        float calcmillis = Mathf.Round(time.Milliseconds / 10);
+        if (calcmillis < 10)
+        {
+            clock += "0";
+        }
+        clock += calcmillis;
+
+        return clock;
     }
 }
