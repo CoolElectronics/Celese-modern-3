@@ -95,41 +95,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.layer == 7 && !dead)
-        {
-            Tilemap hmap = NewCameraController.i.hazardMap;
-
-
-            TileBase tile = hmap.GetTile(hmap.WorldToCell(col.contacts[0].point));
-            Vector2 direction = Vector2.zero;
-            switch (tile.name)
-            {
-                case "spikesU":
-                    direction = Vector2.up;
-                    break;
-                case "spikesD":
-                    direction = Vector2.down;
-                    break;
-                case "spikesL":
-                    direction = Vector2.left;
-                    break;
-                case "spikesR":
-                    direction = Vector2.right;
-                    break;
-            }
-            if (Vector2.Dot(rb.velocity, direction) < dotThreshold)
-            {
-                Vector2 normal = col.contacts[0].normal;
-                Kill(normal);
-
-            }
-        }
-    }
     private void OnTriggerStay2D(Collider2D col)
     {
-        Debug.Log(col.tag);
         if (col.tag == "Battery")
         {
             if (movement.dashes != movement.maxDashCount)
@@ -139,6 +106,80 @@ public class Player : MonoBehaviour
                 movement.dashes = movement.maxDashCount;
             }
         }
+        Tilemap hmap = NewCameraController.i.triggerMap;
+
+        Vector3Int tilepos = hmap.WorldToCell(col.ClosestPoint(transform.position));
+        TileBase tile = NewCameraController.i.TileGet(tilepos);
+        if (tile != null)
+        {
+            if (!dead)
+            {
+                if (tile.name.Contains("spikes"))
+                {
+                    Vector2 direction = Vector2.up;
+                    switch (tile.name)
+                    {
+                        case "spikesU":
+                            direction = Vector2.up;
+                            break;
+                        case "spikesD":
+                            direction = Vector2.down;
+                            break;
+                        case "spikesL":
+                            direction = Vector2.left;
+                            break;
+                        case "spikesR":
+                            direction = Vector2.right;
+                            break;
+                    }
+
+                    Debug.Log(Vector2.Dot(rb.velocity.normalized, direction));
+                    if (Vector2.Dot(rb.velocity, direction) < dotThreshold)
+                    {
+                        Kill(direction);
+                    }
+                }
+            }
+        }
+        else
+        {
+            // Debug.Log(tile);
+        }
+    }
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        if (!dead)
+        {
+            Tilemap hmap = NewCameraController.i.terrainMap;
+
+
+            TileBase tile = NewCameraController.i.TileGet(hmap.WorldToCell(col.contacts[0].point));
+            Vector2 direction = Vector2.zero;
+            if (tile != null)
+            {
+                switch (tile.name)
+                {
+                    case "spikesU":
+                        direction = Vector2.up;
+                        break;
+                    case "spikesD":
+                        direction = Vector2.down;
+                        break;
+                    case "spikesL":
+                        direction = Vector2.left;
+                        break;
+                    case "spikesR":
+                        direction = Vector2.right;
+                        break;
+                }
+                if (Vector2.Dot(rb.velocity, direction) < dotThreshold)
+                {
+                    Vector2 normal = col.contacts[0].normal;
+                    Kill(normal);
+
+                }
+            }
+        }
     }
     private void OnCollisionStay2D(Collision2D col)
     {
@@ -146,7 +187,7 @@ public class Player : MonoBehaviour
         foreach (ContactPoint2D contact in col.contacts)
         {
             Vector3Int tilepos = hmap.WorldToCell(contact.point - contact.normal / 2);
-            TileBase tile = hmap.GetTile(tilepos);
+            TileBase tile = NewCameraController.i.TileGet(tilepos);
             if (tile != null)
             {
                 if (tile.name == "crumbling0")

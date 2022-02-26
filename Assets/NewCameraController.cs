@@ -21,8 +21,7 @@ public class NewCameraController : MonoBehaviour
     public Tilemap terrainMap;
 
     [SerializeField]
-    public Tilemap signalMap;
-    public Tilemap hazardMap;
+    public Tilemap triggerMap;
     public Tilemap[] blocksmaps;
 
     [SerializeField]
@@ -42,10 +41,17 @@ public class NewCameraController : MonoBehaviour
 
     [SerializeField]
     TMPro.TextMeshProUGUI timertext;
+    [SerializeField]
+    GameObject batteryPrefab;
+    [SerializeField]
+    GameObject[] buttonPrefabs;
 
     private System.Diagnostics.Stopwatch watch;
     public delegate void UpdateBlockState(int newstate);
     public UpdateBlockState blockStateUpdateEvent;
+
+    Dictionary<Vector2Int, Vector3Int> spawnpoints = new Dictionary<Vector2Int, Vector3Int>();
+
     void Awake()
     {
         i = this;
@@ -53,6 +59,8 @@ public class NewCameraController : MonoBehaviour
     }
     void Start()
     {
+
+
         watch = new System.Diagnostics.Stopwatch();
         watch.Start();
 
@@ -63,10 +71,63 @@ public class NewCameraController : MonoBehaviour
             pos.x = (int)Mathf.Floor((ppos.x + screenWidth / 2) / screenWidth);
             pos.y = (int)Mathf.Floor((ppos.y + screenHeight / 2) / screenHeight);
         }
+        triggerMap.gameObject.SetActive(true);
+        for (int x = terrainMap.cellBounds.min.x; x < terrainMap.cellBounds.max.x; x++)
+        {
+            for (int y = terrainMap.cellBounds.min.y; y < terrainMap.cellBounds.max.y; y++)
+            {
 
+                Vector3Int tilepos = new Vector3Int(x, y, 0);
+                TileBase tile = terrainMap.GetTile(tilepos);
+                if (tile != null)
+                {
+                    if (tile.name.Contains("spike"))
+                    {
+                        terrainMap.SetTile(tilepos, null);
+                        triggerMap.SetTile(tilepos, tile);
+                    }
+                    switch (tile.name)
+                    {
+                        case "1_idle00":
+
+                            Vector2Int spawnpos = Vector2Int.zero;
+                            spawnpos.x = (int)Mathf.Floor((x + 22 / 2) / 22);
+                            spawnpos.y = (int)Mathf.Floor((y + 17 / 2) / 17);
+                            Debug.Log(spawnpos + " " + tilepos);
+                            spawnpoints.Add(spawnpos, tilepos);
+                            terrainMap.SetTile(tilepos, null);
+                            break;
+                        case "battery0":
+                            Instantiate(batteryPrefab, terrainMap.CellToWorld(tilepos) + Vector3.one / 2, Quaternion.identity);
+                            terrainMap.SetTile(tilepos, null);
+                            break;
+                        case "buttona0":
+                            SpawnButton(0, tilepos);
+                            break;
+                        case "buttonb0":
+                            SpawnButton(1, tilepos);
+                            break;
+                        case "buttonc0":
+                            SpawnButton(2, tilepos);
+                            break;
+
+
+
+                    }
+                }
+            }
+
+        }
         RespawnPlayer();
         blockStateUpdateEvent += blockStateUpdate;
-        blockStateUpdateEvent(0);
+        this.Invoke(() => blockStateUpdateEvent(0), 0.1f);
+    }
+    void SpawnButton(int ind, Vector3Int tilepos)
+    {
+        Quaternion rot = terrainMap.GetTransformMatrix(tilepos).rotation;
+        Instantiate(buttonPrefabs[ind], terrainMap.CellToWorld(tilepos) + stupidRotationOffset(rot), rot);
+        terrainMap.SetTile(tilepos, null);
+
     }
     void blockStateUpdate(int newstate)
     {
@@ -131,26 +192,10 @@ public class NewCameraController : MonoBehaviour
     {
         target.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         Vector2 respawnPos = defaultRespawnPos + new Vector2(pos.x * screenWidth, pos.y * screenHeight);
-        Vector3Int start = new Vector3Int(pos.x * 24 - 12, pos.y * 17 - 8, 0);
-        // Debug.Log(start.x + " " + start.y);
-        for (int x = start.x; x < start.x + 24; x++)
+        if (spawnpoints.ContainsKey(pos))
         {
-            for (int y = start.y; y < start.y + 19; y++)
-            {
-                Vector3Int pos = new Vector3Int(x, y, 0);
-                TileBase tile = signalMap.GetTile(pos);
-                if (tile != null)
-                {
-                    // Debug.Log(tile.name);
-                    if (tile.name == "1_idle00")
-                    {
-                        // Debug.Log("sending to " + pos + " " + signalMap.CellToWorld(pos));
-                        respawnPos = signalMap.CellToWorld(pos) + new Vector3(.5f, .5f, 0);
-                    }
-                }
-            }
+            respawnPos = terrainMap.CellToWorld(spawnpoints[pos]) + new Vector3(.5f, .5f, 0);
         }
-        Debug.Log("repositioning");
         target.transform.position = respawnPos;
     }
     public void Shake(float _amp, float _freq, float _duration)
@@ -185,5 +230,46 @@ public class NewCameraController : MonoBehaviour
         clock += calcmillis;
 
         return clock;
+    }
+    Vector3 stupidRotationOffset(Quaternion rotation)
+    {
+        Debug.Log(rotation.eulerAngles.z);
+        switch (rotation.eulerAngles.z)
+        {
+            case 0:
+                return new Vector3(0.55f, 0.20f, 0);
+            case 90:
+                return new Vector3(0.40f, 0.55f, 0);
+            case 180:
+                return new Vector3(0.55f, 0.35f, 0);
+            case 270:
+                return new Vector3(0.20f, 0.55f, 0);
+
+        }
+        return Vector3.zero;
+    }
+    public TileBase TileGet(Vector3Int pos)
+    {
+        TileBase tbase;
+        tbase = terrainMap.GetTile(pos);
+        if (!tbase)
+        {
+            tbase = triggerMap.GetTile(pos);
+        }
+        if (!tbase)
+        {
+            foreach (Tilemap map in blocksmaps)
+            {
+                if (map.gameObject.activeInHierarchy)
+                {
+                    tbase = map.GetTile(pos);
+                    if (tbase)
+                    {
+                        return tbase;
+                    }
+                }
+            }
+        }
+        return tbase;
     }
 }

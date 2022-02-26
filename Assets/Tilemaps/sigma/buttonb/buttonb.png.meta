@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d0cccc88425c7673c8d92a7183b3f539
+guid: 56d1cae8a01323bb9b2ffaad763238aa
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6297604747093223726
-    second: switchblock0
+      213: 3196442133561332902
+    second: buttonb0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -119,7 +119,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: switchblock0
+      name: buttonb0
       rect:
         serializedVersion: 2
         x: 1
@@ -133,8 +133,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2d6d1b149d96a98a0800000000000000
-      internalID: -6297604747093223726
+      spriteID: 6a4d30c5f2b0c5c20800000000000000
+      internalID: 3196442133561332902
       vertices: []
       indices: 
       edges: []
@@ -150,7 +150,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      switchblock0: -6297604747093223726
+      buttonb0: 3196442133561332902
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
