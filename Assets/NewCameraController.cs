@@ -246,6 +246,7 @@ public class NewCameraController : MonoBehaviour
                 return new Vector3(0.20f, 0.55f, 0);
 
         }
+
         return Vector3.zero;
     }
     public TileBase TileGet(Vector3Int pos)
