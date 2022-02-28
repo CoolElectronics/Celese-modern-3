@@ -38,6 +38,12 @@ public class Player : MonoBehaviour
     GameObject sprite_1;
     [SerializeField]
     TileBase crumblingTile;
+    [SerializeField]
+    Vector3 springVel;
+    [SerializeField]
+    Vector3 jspringVel;
+    [SerializeField]
+    float springTime;
 
     playerMovement movement;
 
@@ -97,42 +103,44 @@ public class Player : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D col)
     {
-        if (col.tag == "Battery")
+        switch (col.tag)
         {
-            if (movement.dashes != movement.maxDashCount)
-            {
-                col.gameObject.SetActive(false);
-                this.Invoke(() => col.gameObject.SetActive(true), 1);
+            case "Battery":
+
+                if (movement.dashes != movement.maxDashCount)
+                {
+                    col.gameObject.SetActive(false);
+                    this.Invoke(() => col.gameObject.SetActive(true), 1);
+                    movement.dashes = movement.maxDashCount;
+                }
+                break;
+            case "Spring":
+                Vector2 newvel = col.gameObject.transform.rotation * jspringVel;
                 movement.dashes = movement.maxDashCount;
-            }
+                Debug.Log(col.gameObject.transform.rotation.eulerAngles.z);
+                if (col.gameObject.transform.rotation.eulerAngles.z == 90 || col.gameObject.transform.rotation.eulerAngles.z == 270)
+                {
+                    newvel = col.gameObject.transform.rotation * springVel;
+
+                    movement.overrideMove = true;
+                    this.Invoke(() => movement.overrideMove = false, springTime);
+                    newvel.y = springVel.z;
+                }
+                rb.velocity = newvel;
+                break;
         }
         Tilemap hmap = NewCameraController.i.triggerMap;
 
         Vector3Int tilepos = hmap.WorldToCell(col.ClosestPoint(transform.position));
-        TileBase tile = NewCameraController.i.TileGet(tilepos);
-        if (tile != null)
+        (Tilemap, TileBase) tile = NewCameraController.i.TileGet(tilepos);
+        if (tile.Item2 != null)
         {
             if (!dead)
             {
-                if (tile.name.Contains("spikes"))
+                if (tile.Item2.name.Contains("spikes"))
                 {
-                    Vector2 direction = Vector2.up;
-                    switch (tile.name)
-                    {
-                        case "spikesU":
-                            direction = Vector2.up;
-                            break;
-                        case "spikesD":
-                            direction = Vector2.down;
-                            break;
-                        case "spikesL":
-                            direction = Vector2.left;
-                            break;
-                        case "spikesR":
-                            direction = Vector2.right;
-                            break;
-                    }
-
+                    float rotation = tile.Item1.GetTransformMatrix(tilepos).rotation.eulerAngles.z;
+                    Vector2 direction = new Vector2(-Mathf.Sin(rotation * Mathf.Deg2Rad), Mathf.Cos(rotation * Mathf.Deg2Rad));
                     Debug.Log(Vector2.Dot(rb.velocity.normalized, direction));
                     if (Vector2.Dot(rb.velocity, direction) < dotThreshold)
                     {
@@ -146,54 +154,39 @@ public class Player : MonoBehaviour
             // Debug.Log(tile);
         }
     }
-    private void OnCollisionEnter2D(Collision2D col)
-    {
-        if (!dead)
-        {
-            Tilemap hmap = NewCameraController.i.terrainMap;
-
-
-            TileBase tile = NewCameraController.i.TileGet(hmap.WorldToCell(col.contacts[0].point));
-            Vector2 direction = Vector2.zero;
-            if (tile != null)
-            {
-                switch (tile.name)
-                {
-                    case "spikesU":
-                        direction = Vector2.up;
-                        break;
-                    case "spikesD":
-                        direction = Vector2.down;
-                        break;
-                    case "spikesL":
-                        direction = Vector2.left;
-                        break;
-                    case "spikesR":
-                        direction = Vector2.right;
-                        break;
-                }
-                if (Vector2.Dot(rb.velocity, direction) < dotThreshold)
-                {
-                    Vector2 normal = col.contacts[0].normal;
-                    Kill(normal);
-
-                }
-            }
-        }
-    }
     private void OnCollisionStay2D(Collision2D col)
     {
         Tilemap hmap = NewCameraController.i.terrainMap;
         foreach (ContactPoint2D contact in col.contacts)
         {
             Vector3Int tilepos = hmap.WorldToCell(contact.point - contact.normal / 2);
-            TileBase tile = NewCameraController.i.TileGet(tilepos);
+            TileBase tile = NewCameraController.i.TileGet(tilepos).Item2;
             if (tile != null)
             {
                 if (tile.name == "crumbling0")
                 {
                     this.Invoke(() => { crumbledTiles.Add(tilepos); hmap.SetTile(tilepos, null); }, 0.2f);
 
+                }
+            }
+            if (!dead)
+            {
+                (Tilemap, TileBase) ntile = NewCameraController.i.TileGet(hmap.WorldToCell(contact.point));
+                if (ntile.Item2 != null && col.gameObject == ntile.Item1.gameObject)
+                {
+                    if (ntile.Item2.name.Contains("spikes"))
+                    {
+                        float rotation = ntile.Item1.GetTransformMatrix(tilepos).rotation.eulerAngles.z;
+
+                        Vector2 direction = new Vector2(-Mathf.Sin(rotation * Mathf.Deg2Rad), Mathf.Cos(rotation * Mathf.Deg2Rad));
+
+                        if (Vector2.Dot(rb.velocity, direction) < dotThreshold)
+                        {
+                            Vector2 normal = col.contacts[0].normal;
+                            Kill(normal);
+
+                        }
+                    }
                 }
             }
         }

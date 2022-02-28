@@ -3,16 +3,16 @@ Branch:                  2021.2/staging
 Build type:              Release
 Batch mode:              YES
 System name:             Linux
-Distro version:          #1 SMP PREEMPT Wed, 16 Feb 2022 19:35:18 +0000
-Kernel version:          5.16.10-arch1-1
+Distro version:          #1 SMP PREEMPT Thu, 24 Feb 2022 02:18:20 +0000
+Kernel version:          5.16.11-arch1-1
 Architecture:            x86_64
 Available memory:        16007 MB
 Using pre-set license
 Pro License: NO
-Gtk-Message: 21:08:31.227: Failed to load module "appmenu-gtk-module"
-Gtk-Message: 21:08:31.228: Failed to load module "appmenu-gtk-module"
+Gtk-Message: 18:44:39.028: Failed to load module "appmenu-gtk-module"
+Gtk-Message: 18:44:39.029: Failed to load module "appmenu-gtk-module"
 
-(Unity:8409): Gdk-CRITICAL **: 21:08:31.244: gdk_window_get_cursor: assertion 'GDK_IS_WINDOW (window)' failed
+(Unity:64813): Gdk-CRITICAL **: 18:44:39.044: gdk_window_get_cursor: assertion 'GDK_IS_WINDOW (window)' failed
 Desktop is 3840 x 1080 @ 60 Hz
 Initialize udev device monitor.
 
@@ -28,7 +28,7 @@ AssetImportWorker0
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-42875
+39759
 Successfully changed project path to: /home/ce/Documents/GitHub/Celese-modern-3
 /home/ce/Documents/GitHub/Celese-modern-3
 [UnityMemory] Configuration Parameters - Can be set up in boot.config
@@ -60,7 +60,7 @@ Successfully changed project path to: /home/ce/Documents/GitHub/Celese-modern-3
     "memorysetup-temp-allocator-size-cloud-worker=32768"
     "memorysetup-temp-allocator-size-gi-baking-worker=262144"
     "memorysetup-temp-allocator-size-gfx=262144"
-Refreshing native plugins compatible for Editor in 37.05 ms, found 1 plugins.
+Refreshing native plugins compatible for Editor in 42.58 ms, found 1 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 2021.2.7f1 (6bd9e232123f)
 [Subsystems] Discovering subsystems at path /home/ce/Unity/Hub/Editor/2021.2.7f1/Editor/Data/Resources/UnitySubsystems
@@ -80,144 +80,85 @@ L_EXT_texture_lod_bias GL_EXT_texture_mirror_clamp GL_EXT_texture_object GL_EXT_
 blend_equation_advanced_coherent GL_NVX_blend_equation_advanced_multi_draw_buffers GL_NV_blend_minmax_factor GL_NV_blend_square GL_NV_clip_space_w_scaling GL_NV_command_list GL_NV_compute_program5 GL_NV_conditional_render GL_NV_conservative_raster GL_NV_conservative_raster_dilate GL_NV_conservative_raster_pre_snap_triangles GL_NV_copy_depth_to_color GL_NV_copy_image GL_NV_depth_buffer_float GL_NV_depth_clamp GL_NV_draw_texture GL_NV_draw_vulkan_image GL_NV_ES1_1_compatibility GL_NV_ES3_1_compatibility GL_NV_explicit_multisample GL_NV_feature_query GL_NV_fence GL_NV_fill_rectangle GL_NV_float_buffer GL_NV_fog_distance GL_NV_fragment_coverage_to_color GL_NV_fragment_program GL_NV_fragment_program_option GL_NV_fragment_program2 GL_NV_fragment_shader_interlock GL_NV_framebuffer_mixed_samples GL_NV_framebuffer_multisample_coverage GL_NV_geometry_shader4 GL_NV_geometry_shader_passthrough GL_NV_gpu_program4 GL_NV_internalformat_sample_query GL_NV_gpu_program4_1 GL_NV_gpu_program5 GL_NV_gpu_program5_mem_extended GL_
 NV_gpu_program_fp64 GL_NV_gpu_shader5 GL_NV_half_float GL_NV_light_max_exponent GL_NV_memory_attachment GL_NV_multisample_coverage GL_NV_multisample_filter_hint GL_NV_occlusion_query GL_NV_packed_depth_stencil GL_NV_parameter_buffer_object GL_NV_parameter_buffer_object2 GL_NV_path_rendering GL_NV_path_rendering_shared_edge GL_NV_pixel_data_range GL_NV_point_sprite GL_NV_primitive_restart GL_NV_query_resource GL_NV_query_resource_tag GL_NV_register_combiners GL_NV_register_combiners2 GL_NV_sample_locations GL_NV_sample_mask_override_coverage GL_NV_shader_atomic_counters GL_NV_shader_atomic_float GL_NV_shader_atomic_float64 GL_NV_shader_atomic_fp16_vector GL_NV_shader_atomic_int64 GL_NV_shader_buffer_load GL_NV_shader_storage_buffer_object GL_NV_shader_subgroup_partitioned GL_NV_stereo_view_rendering GL_NV_texgen_reflection GL_NV_texture_barrier GL_NV_texture_compression_vtc GL_NV_texture_env_combine4 GL_NV_texture_multisample GL_NV_texture_rectangle GL_NV_texture_rectangle_compressed GL_NV_texture_shader GL_N
 V_texture_shader2 GL_NV_texture_shader3 GL_NV_transform_feedback GL_NV_transform_feedback2 GL_NV_uniform_buffer_unified_memory GL_NV_vdpau_interop GL_NV_vdpau_interop2 GL_NV_vertex_array_range GL_NV_vertex_array_range2 GL_NV_vertex_attrib_integer_64bit GL_NV_vertex_buffer_unified_memory GL_NV_vertex_program GL_NV_vertex_program1_1 GL_NV_vertex_program2 GL_NV_vertex_program2_option GL_NV_vertex_program3 GL_NV_viewport_array2 GL_NV_viewport_swizzle GL_NVX_conditional_render GL_NV_gpu_multicast GL_NVX_progress_fence GL_NVX_gpu_memory_info GL_NVX_nvenc_interop GL_NV_shader_thread_group GL_NV_shader_thread_shuffle GL_KHR_blend_equation_advanced GL_KHR_blend_equation_advanced_coherent GL_OVR_multiview GL_OVR_multiview2 GL_SGIS_generate_mipmap GL_SGIS_texture_lod GL_SGIX_depth_texture GL_SGIX_shadow GL_SUN_slice_accum
-OPENGL LOG: Creating OpenGL 4.5 graphics device ; Context level  <OpenGL 4.5> ; Context handle -963248760
+OPENGL LOG: Creating OpenGL 4.5 graphics device ; Context level  <OpenGL 4.5> ; Context handle 1600447048
 Initialize mono
 Mono path[0] = '/home/ce/Unity/Hub/Editor/2021.2.7f1/Editor/Data/Managed'
 Mono path[1] = '/home/ce/Unity/Hub/Editor/2021.2.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-linux'
 Mono config path = '/home/ce/Unity/Hub/Editor/2021.2.7f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56409
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56813
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: /home/ce/Unity/Hub/Editor/2021.2.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: /home/ce/Unity/Hub/Editor/2021.2.7f1/Editor/Data/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll
+Register platform support module: /home/ce/Unity/Hub/Editor/2021.2.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
 Register platform support module: /home/ce/Unity/Hub/Editor/2021.2.7f1/Editor/Data/PlaybackEngines/LinuxStandaloneSupport/UnityEditor.LinuxStandalone.Extensions.dll
-Registered in 0.005321 seconds.
+Registered in 0.006643 seconds.
 Native extension for LinuxStandalone target not found
+Native extension for WindowsStandalone target not found
+Native extension for OSXStandalone target not found
 Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 38.65 ms, found 1 plugins.
+Refreshing native plugins compatible for Editor in 37.35 ms, found 1 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  0.487 seconds
+- Completed reload, in  0.502 seconds
 Domain Reload Profiling:
-	ReloadAssembly (487ms)
-		BeginReloadAssembly (38ms)
+	ReloadAssembly (502ms)
+		BeginReloadAssembly (46ms)
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (0ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
 			CreateAndSetChildDomain (1ms)
-		EndReloadAssembly (377ms)
-			LoadAssemblies (37ms)
+		EndReloadAssembly (384ms)
+			LoadAssemblies (44ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (104ms)
+			SetupTypeCache (103ms)
 			ReleaseScriptCaches (0ms)
-			RebuildScriptCaches (28ms)
-			SetupLoadedEditorAssemblies (203ms)
+			RebuildScriptCaches (30ms)
+			SetupLoadedEditorAssemblies (207ms)
 				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (12ms)
+				InitializePlatformSupportModulesInManaged (15ms)
 				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (39ms)
+				RefreshPlugins (37ms)
 				BeforeProcessingInitializeOnLoad (1ms)
-				ProcessInitializeOnLoadAttributes (116ms)
-				ProcessInitializeOnLoadMethodAttributes (35ms)
+				ProcessInitializeOnLoadAttributes (117ms)
+				ProcessInitializeOnLoadMethodAttributes (36ms)
 				AfterProcessingInitializeOnLoad (0ms)
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
 			AwakeInstancesAfterBackupRestoration (0ms)
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.002704 seconds.
+Registered in 0.002696 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for LinuxStandalone target not found
+Native extension for WindowsStandalone target not found
+Native extension for OSXStandalone target not found
 Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 38.54 ms, found 1 plugins.
+Refreshing native plugins compatible for Editor in 38.31 ms, found 1 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.176 seconds
-Domain Reload Profiling:
-	ReloadAssembly (1177ms)
-		BeginReloadAssembly (74ms)
-			ExecutionOrderSort (0ms)
-			DisableScriptedObjects (5ms)
-			BackupInstance (0ms)
-			ReleaseScriptingObjects (0ms)
-			CreateAndSetChildDomain (18ms)
-		EndReloadAssembly (1020ms)
-			LoadAssemblies (40ms)
-			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (179ms)
-			ReleaseScriptCaches (1ms)
-			RebuildScriptCaches (49ms)
-			SetupLoadedEditorAssemblies (698ms)
-				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (13ms)
-				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (39ms)
-				BeforeProcessingInitializeOnLoad (52ms)
-				ProcessInitializeOnLoadAttributes (561ms)
-				ProcessInitializeOnLoadMethodAttributes (29ms)
-				AfterProcessingInitializeOnLoad (5ms)
-				EditorAssembliesLoaded (0ms)
-			ExecutionOrderSort2 (0ms)
-			AwakeInstancesAfterBackupRestoration (3ms)
-Platform modules already initialized, skipping
-========================================================================
-Worker process is ready to serve import requests
-Launched and connected shader compiler UnityShaderCompiler after 0.01 seconds
-Refreshing native plugins compatible for Editor in 0.51 ms, found 1 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 2414 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 33 unused Assets / (36.6 KB). Loaded Objects now: 2876.
-Memory consumption went from 105.2 MB to 105.1 MB.
-Total: 4.028084 ms (FindLiveObjects: 0.239880 ms CreateObjectMapping: 0.069651 ms MarkObjects: 3.625719 ms  DeleteObjects: 0.091241 ms)
-
-AssetImportParameters requested are different than current active one (requested -> active):
-  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
-  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
-  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
-  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
-  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
-  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
-  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
-  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
-========================================================================
-Received Import Request.
-  Time since last request: 633.010047 seconds.
-  path: Assets/Prefabs/player.prefab
-  artifactKey: Guid(2ead0f8dafcacdc33bae5f1ed161703e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Prefabs/player.prefab using Guid(2ead0f8dafcacdc33bae5f1ed161703e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '455bf1a6f158537808a7e542a56309f4') in 0.098993 seconds 
-========================================================================
-Received Import Request.
-  Time since last request: 34.332543 seconds.
-  path: Assets/Tilemaps/sigma/sigma.prefab
-  artifactKey: Guid(1317eaeb705903a4585bec5fdf890bb6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Tilemaps/sigma/sigma.prefab using Guid(1317eaeb705903a4585bec5fdf890bb6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b57764d1e2df683b2e3e3b21c2b6fa43') in 0.022233 seconds 
-========================================================================
-Received Import Request.
-  Time since last request: 3.067038 seconds.
-  path: Assets/Tilemaps/sigma/flatU 1.png
-  artifactKey: Guid(6f952b5df4daa6be89242baab44666ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Tilemaps/sigma/flatU 1.png using Guid(6f952b5df4daa6be89242baab44666ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ba0d6486af55b9c2420aa050a01e3ec8') in 0.018684 seconds 
-========================================================================
-Received Import Request.
-  Time since last request: 3.499728 seconds.
-  path: Assets/Tilemaps/sigma/flatU.png
-  artifactKey: Guid(a4c76344aba14934ba8750ef257775d6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Tilemaps/sigma/flatU.png using Guid(a4c76344aba14934ba8750ef257775d6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a5a70a3c1dc00c41a98735706f875583') in 0.006788 seconds 
-========================================================================
-Received Import Request.
-  Time since last request: 26.459253 seconds.
-  path: Assets/Tilemaps/sigma/sigma.prefab
-  artifactKey: Guid(1317eaeb705903a4585bec5fdf890bb6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Tilemaps/sigma/sigma.prefab using Guid(1317eaeb705903a4585bec5fdf890bb6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4452536220097d803e23f66d0bf989ad') in 0.023533 seconds 
-========================================================================
-Received Import Request.
-  Time since last request: 14.195563 seconds.
-  path: Assets/Tilemaps/sigma/sigma.prefab
-  artifactKey: Guid(1317eaeb705903a4585bec5fdf890bb6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Tilemaps/sigma/sigma.prefab using Guid(1317eaeb705903a4585bec5fdf890bb6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3aef46b9ab866b745ec8fcec250f0f84') in 0.013690 seconds 
-========================================================================
-Received Import Request.
-  Time since last request: 16.966929 seconds.
-  path: Assets/Tilemaps/sigma/sigma.prefab
-  artifactKey: Guid(1317eaeb705903a4585bec5fdf890bb6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Tilemaps/sigma/sigma.prefab using Guid(1317eaeb705903a4585bec5fdf890bb6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a0d53ca4f7a873edc5b4093c1106fb12') in 0.013651 seconds 
+Caught fatal signal - signo:11 code:1 errno:0 addr:0x58
+Obtained 23 stack frames.
+#0  0x0055955a7f130c in burst_signal_handler(int, siginfo_t*, void*)
+#1  0x007fa6af6b5560 in __sigaction
+#2  0x007fa57ca7012b in GC_is_marked
+#3  0x007fa57ca3dfdb in mono_unity_liveness_free_struct
+#4  0x007fa57ca6e542 in GC_mark_some
+#5  0x007fa57ca6dbc5 in GC_stopped_mark
+#6  0x007fa57ca6d67c in GC_maybe_gc
+#7  0x007fa57ca6e243 in GC_collect_a_little_inner
+#8  0x007fa57ca6fcb7 in GC_allocobj
+#9  0x007fa57ca6a0b1 in GC_generic_malloc_inner
+#10 0x007fa57ca705e5 in GC_generic_malloc
+#11 0x007fa57ca3e7b0 in mono_gc_register_root
+#12 0x007fa57c9e1e52 in mono_runtime_class_init
+#13 0x007fa57c86eac5 in mono_set_break_policy
+#14 0x007fa57c83c680 in _init
+#15 0x007fa57c83e8b6 in _init
+#16 0x007fa57c842548 in mono_jit_set_domain
+#17 0x007fa57c8c0343 in mono_install_ftnptr_eh_callback
+#18 0x007fa57c8bfdc0 in mono_install_ftnptr_eh_callback
+#19 0x00000041dc7396 in (Unknown)
+#20 0x00000041ab1cd4 in Burst.Compiler.IL.DebugInfo.PortablePdbInstance:IsPdbValidAndMatching (System.Guid,System.Collections.Immutable.ImmutableArray`1<byte>)
+#21 0x00000041aae71c in Burst.Compiler.IL.DebugInfo.PortablePdbCache:AddEntry (Mono.Cecil.AssemblyDefinition,System.Action`2<Burst.Compiler.IL.LogMessageType, string>)
+#22 0x00000041aa3228 in zzzUnity.Burst.CodeGen.AssemblyLoader:RegisterAssembly (Mono.Cecil.AssemblyNameReference,Mono.Cecil.AssemblyDefinition)

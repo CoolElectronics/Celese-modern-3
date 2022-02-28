@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 public class NewCameraController : MonoBehaviour
 {
     public static NewCameraController i;
@@ -45,6 +46,8 @@ public class NewCameraController : MonoBehaviour
     GameObject batteryPrefab;
     [SerializeField]
     GameObject[] buttonPrefabs;
+    [SerializeField]
+    GameObject springPrefab;
 
     private System.Diagnostics.Stopwatch watch;
     public delegate void UpdateBlockState(int newstate);
@@ -52,6 +55,21 @@ public class NewCameraController : MonoBehaviour
 
     Dictionary<Vector2Int, Vector3Int> spawnpoints = new Dictionary<Vector2Int, Vector3Int>();
 
+    [SerializeField]
+    TileBase spiketilebase;
+    [SerializeField]
+    GameObject pauseMenu;
+
+    [SerializeField]
+    Image selector;
+    [SerializeField]
+    List<TMPro.TextMeshProUGUI> pauseTexts;
+
+    MenuItem[] currentItems;
+
+    public bool isPaused = false;
+    int selectorPosition = 0;
+    public NestedDict<TileBase, List<TileBase>> tileMappings;
     void Awake()
     {
         i = this;
@@ -71,6 +89,11 @@ public class NewCameraController : MonoBehaviour
             pos.x = (int)Mathf.Floor((ppos.x + screenWidth / 2) / screenWidth);
             pos.y = (int)Mathf.Floor((ppos.y + screenHeight / 2) / screenHeight);
         }
+        foreach (Tilemap map in blocksmaps)
+        {
+            map.gameObject.SetActive(false);
+            map.gameObject.SetActive(true);
+        }
         triggerMap.gameObject.SetActive(true);
         for (int x = terrainMap.cellBounds.min.x; x < terrainMap.cellBounds.max.x; x++)
         {
@@ -81,10 +104,18 @@ public class NewCameraController : MonoBehaviour
                 TileBase tile = terrainMap.GetTile(tilepos);
                 if (tile != null)
                 {
+                    if (tileMappings.Get(tile) != null)
+                    {
+                        List<TileBase> tiles = tileMappings.Get(tile);
+                        // terrainMap.SetTile(tilepos, tiles[Random.Range(0, tiles.Count - 1)]);
+                    }
                     if (tile.name.Contains("spike"))
                     {
-                        terrainMap.SetTile(tilepos, null);
+                        // Debug.Log(terrainMap.GetTransformMatrix(tilepos));
                         triggerMap.SetTile(tilepos, tile);
+                        triggerMap.SetTransformMatrix(tilepos, terrainMap.GetTransformMatrix(tilepos));
+                        terrainMap.SetTile(tilepos, null);
+
                     }
                     switch (tile.name)
                     {
@@ -109,6 +140,20 @@ public class NewCameraController : MonoBehaviour
                             break;
                         case "buttonc0":
                             SpawnButton(2, tilepos);
+                            break;
+                        case "spring0":
+                            Quaternion rot = terrainMap.GetTransformMatrix(tilepos).rotation;
+                            if (rot.eulerAngles.z == 90 || rot.eulerAngles.z == 180)
+                            {
+                                Instantiate(springPrefab, terrainMap.CellToWorld(tilepos) - (rot * Vector2.one / 4), rot);
+
+                            }
+                            else
+                            {
+                                Instantiate(springPrefab, terrainMap.CellToWorld(tilepos) + (rot * Vector2.one / 4), rot);
+
+                            }
+                            terrainMap.SetTile(tilepos, null);
                             break;
 
 
@@ -145,7 +190,77 @@ public class NewCameraController : MonoBehaviour
             index++;
         }
     }
+    void Update()
+    {
+        if (isPaused)
+        {
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
 
+                selectorPosition++;
+                if (selectorPosition > 2)
+                {
+                    selectorPosition = 0;
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                selectorPosition--;
+                if (selectorPosition < 0)
+                {
+                    selectorPosition = 2;
+                }
+            }
+            selector.transform.localPosition = new Vector3(-150, 70 - selectorPosition * 70, 0);
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                currentItems[selectorPosition].action();
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Return))
+        {
+            if (Input.GetKeyDown(KeyCode.Return)) { if (isPaused) return; };
+            void wtf()
+            {
+                Debug.Log("?");
+                isPaused = !isPaused;
+                pauseMenu.SetActive(!pauseMenu.activeInHierarchy);
+                if (isPaused)
+                {
+                    Time.timeScale = 0;
+                    selectorPosition = 0;
+                    RenderMenu(new MenuItem[3] {
+                        new MenuItem("Continue", ()=>this.Invoke(wtf,0)),
+                        new MenuItem("Options", ()=>{
+                            RenderMenu(new MenuItem[3] {
+                                new MenuItem("placeholder",()=>{}),
+                                new MenuItem("placeholder",()=>{}),
+                                new MenuItem("exit",()=>this.Invoke(wtf,0)),
+                            });
+                }),
+                         new MenuItem("Reset Cart", () =>
+                         {
+                             Time.timeScale = 1;
+                             UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+                         })
+                    });
+                }
+                else
+                {
+                    Time.timeScale = 1;
+                }
+            };
+            this.Invoke(wtf, 0);
+        }
+    }
+    void RenderMenu(MenuItem[] items)
+    {
+        currentItems = items;
+        for (int i = 0; i < items.Length; i++)
+        {
+            pauseTexts[i].text = items[i].name;
+        }
+    }
     void FixedUpdate()
     {
         timertext.text = TimeFormat(watch.Elapsed);
@@ -197,6 +312,7 @@ public class NewCameraController : MonoBehaviour
             respawnPos = terrainMap.CellToWorld(spawnpoints[pos]) + new Vector3(.5f, .5f, 0);
         }
         target.transform.position = respawnPos;
+        blockStateUpdate(0);
     }
     public void Shake(float _amp, float _freq, float _duration)
     {
@@ -249,13 +365,17 @@ public class NewCameraController : MonoBehaviour
 
         return Vector3.zero;
     }
-    public TileBase TileGet(Vector3Int pos)
+    public (Tilemap, TileBase) TileGet(Vector3Int pos)
     {
         TileBase tbase;
         tbase = terrainMap.GetTile(pos);
         if (!tbase)
         {
             tbase = triggerMap.GetTile(pos);
+            if (tbase)
+            {
+                return (triggerMap, tbase);
+            }
         }
         if (!tbase)
         {
@@ -266,11 +386,11 @@ public class NewCameraController : MonoBehaviour
                     tbase = map.GetTile(pos);
                     if (tbase)
                     {
-                        return tbase;
+                        return (map, tbase);
                     }
                 }
             }
         }
-        return tbase;
+        return (terrainMap, tbase);
     }
 }

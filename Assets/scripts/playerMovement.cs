@@ -183,6 +183,8 @@ public class playerMovement : MonoBehaviour
     [HideInInspector]
     public bool isGrounded = false;
 
+    public bool overrideMove = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -389,6 +391,7 @@ public class playerMovement : MonoBehaviour
                 NewCameraController.i.Shake(0.1f, 1, 3);
 
                 isGrounded = false;
+                overrideMove = false;
                 Vector2 dashDir = new Vector2(0, 0);
 
                 if (LArrowPressed)
@@ -425,7 +428,7 @@ public class playerMovement : MonoBehaviour
                 dashAvailable = false;
 
                 dashing = true;
-                Invoke("restoreDash", dashEndTime);
+                Invoke("restoreDash", dashEndTime + (dashVect.y == 1 ? 0.5f : 0));
             }
         }
         if (ZUnpressed)
@@ -571,7 +574,10 @@ public class playerMovement : MonoBehaviour
         HandleGravity();
 
         //set the new velocity
-        rb.velocity = new Vector2(newXvel, newYvel);
+        if (!overrideMove)
+        {
+            rb.velocity = new Vector2(newXvel, newYvel);
+        }
         if (ZPressed)
         {
             ZPressed = false;
@@ -597,8 +603,8 @@ public class playerMovement : MonoBehaviour
         UArrowPressed = Input.GetKey(KeyCode.UpArrow);
         DArrowPressed = Input.GetKey(KeyCode.DownArrow);
 
-        if (Input.GetKeyDown(KeyCode.Z)) ZPressed = true;
-        if (Input.GetKeyUp(KeyCode.Z)) ZUnpressed = true;
+        if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.C)) ZPressed = true;
+        if (Input.GetKeyUp(KeyCode.Z) || Input.GetKeyUp(KeyCode.C)) ZUnpressed = true;
         if (Input.GetKeyDown(KeyCode.X)) XPressed = true;
         if (Input.GetKeyUp(KeyCode.X)) XUnpressed = true;
 
