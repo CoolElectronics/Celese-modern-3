@@ -17,11 +17,7 @@ public class NewCameraController : MonoBehaviour
     Camera cam;
     [SerializeField]
     Vector2 defaultRespawnPos;
-
-    [SerializeField]
     public Tilemap terrainMap;
-
-    [SerializeField]
     public Tilemap triggerMap;
     public Tilemap[] blocksmaps;
 
@@ -69,7 +65,7 @@ public class NewCameraController : MonoBehaviour
 
     public bool isPaused = false;
     int selectorPosition = 0;
-    public NestedDict<TileBase, List<TileBase>> tileMappings;
+    // public NestedDict<TileBase, List<TileBase>> tileMappings;
     void Awake()
     {
         i = this;
@@ -78,9 +74,10 @@ public class NewCameraController : MonoBehaviour
     void Start()
     {
 
-
+        Debug.Log("reached point 1");
         watch = new System.Diagnostics.Stopwatch();
         watch.Start();
+        Debug.Log("reached point 2");
 
         cam = Camera.main;
         if (playerpos.activeInHierarchy)
@@ -89,26 +86,32 @@ public class NewCameraController : MonoBehaviour
             pos.x = (int)Mathf.Floor((ppos.x + screenWidth / 2) / screenWidth);
             pos.y = (int)Mathf.Floor((ppos.y + screenHeight / 2) / screenHeight);
         }
+        Debug.Log("reached point 3");
+
         foreach (Tilemap map in blocksmaps)
         {
             map.gameObject.SetActive(false);
             map.gameObject.SetActive(true);
         }
+        Debug.Log("reached point 4");
+
         triggerMap.gameObject.SetActive(true);
         for (int x = terrainMap.cellBounds.min.x; x < terrainMap.cellBounds.max.x; x++)
         {
             for (int y = terrainMap.cellBounds.min.y; y < terrainMap.cellBounds.max.y; y++)
             {
-
+                // Debug.Log("reached point 5");
                 Vector3Int tilepos = new Vector3Int(x, y, 0);
                 TileBase tile = terrainMap.GetTile(tilepos);
+                // Debug.Log(tile);
                 if (tile != null)
                 {
-                    if (tileMappings.Get(tile) != null)
-                    {
-                        List<TileBase> tiles = tileMappings.Get(tile);
-                        // terrainMap.SetTile(tilepos, tiles[Random.Range(0, tiles.Count - 1)]);
-                    }
+                    Debug.Log("the tile is " + tile);
+                    // if (tileMappings.Get(tile) != null)
+                    // {
+                    //     List<TileBase> tiles = tileMappings.Get(tile);
+                    //     // terrainMap.SetTile(tilepos, tiles[Random.Range(0, tiles.Count - 1)]);
+                    // }
                     if (tile.name.Contains("spike"))
                     {
                         // Debug.Log(terrainMap.GetTransformMatrix(tilepos));
@@ -163,9 +166,15 @@ public class NewCameraController : MonoBehaviour
             }
 
         }
+        Debug.Log("reached point 6");
+
         RespawnPlayer();
         blockStateUpdateEvent += blockStateUpdate;
+        Debug.Log("reached point 7");
+
         this.Invoke(() => blockStateUpdateEvent(0), 0.1f);
+        Debug.Log("reached point 8");
+
     }
     void SpawnButton(int ind, Vector3Int tilepos)
     {
