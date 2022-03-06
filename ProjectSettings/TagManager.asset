@@ -8,6 +8,7 @@ TagManager:
   - Spring
   - DoubleBattery
   - BlinkBattery
+  - Flag
   layers:
   - Default
   - TransparentFX

@@ -39,4 +39,16 @@ public class BlockSwitchButton : MonoBehaviour
             }
         }
     }
+    void OnTriggerStay2D(Collider2D col)
+    {
+        if (col.gameObject.GetComponent<playerMovement>() && enabled)
+        {
+            if (col.gameObject.GetComponent<playerMovement>().dashing)
+            {
+                nc.blockStateUpdateEvent(mystate);
+                NewCameraController.i.Shake(0.3f, 2, 10);
+
+            }
+        }
+    }
 }

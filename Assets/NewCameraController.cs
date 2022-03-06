@@ -71,11 +71,22 @@ public class NewCameraController : MonoBehaviour
 
     public bool isPaused = false;
     int selectorPosition = 0;
+    public int deaths = 0;
+    [SerializeField]
+    GameObject endPanel;
+    [SerializeField]
+    TMPro.TextMeshProUGUI endText;
     // public NestedDict<TileBase, List<TileBase>> tileMappings;
     void Awake()
     {
         i = this;
 
+    }
+    public void Finish()
+    {
+        watch.Stop();
+        endPanel.SetActive(true);
+        endText.text = "Deaths: " + deaths + "\n" + TimeFormat(watch.Elapsed);
     }
     void Start()
     {
@@ -105,11 +116,6 @@ public class NewCameraController : MonoBehaviour
                 TileBase tile = terrainMap.GetTile(tilepos);
                 if (tile != null)
                 {
-                    // if (tileMappings.Get(tile) != null)
-                    // {
-                    //     List<TileBase> tiles = tileMappings.Get(tile);
-                    //     // terrainMap.SetTile(tilepos, tiles[Random.Range(0, tiles.Count - 1)]);
-                    // }
                     if (tile.name.ToLower().Contains("spike"))
                     {
                         triggerMap.SetTile(tilepos, tile);

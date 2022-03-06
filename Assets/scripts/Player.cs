@@ -45,6 +45,7 @@ public class Player : MonoBehaviour
     playerMovement movement;
 
     bool crouched = false;
+    bool ended = false;
 
     List<Vector3Int> crumbledTiles = new List<Vector3Int>();
     void Awake()
@@ -105,6 +106,13 @@ public class Player : MonoBehaviour
                     newvel.y = springVel.z;
                 }
                 rb.velocity = newvel;
+                break;
+            case "Flag":
+                if (!ended)
+                {
+                    ended = true;
+                    NewCameraController.i.Finish();
+                }
                 break;
         }
         Tilemap hmap = NewCameraController.i.triggerMap;
@@ -188,6 +196,7 @@ public class Player : MonoBehaviour
         NewCameraController.i.blockStateUpdateEvent(0);
 
         //GetComponent<SpriteRenderer>().enabled = true;
+        // GetComponent<Animator>().
         dead = false;
     }
     public void Kill(Vector3 normal)
@@ -213,6 +222,7 @@ public class Player : MonoBehaviour
         movement.dashes = movement.maxDashCount;
         movement.blink = false;
         movement.blinking = false;
+        NewCameraController.i.deaths++;
         Destroy(deathParticles, 3f);
     }
 }

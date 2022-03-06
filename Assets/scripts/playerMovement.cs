@@ -661,6 +661,10 @@ public class playerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.X)) XPressed = true;
         if (Input.GetKeyUp(KeyCode.X)) XUnpressed = true;
 
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            showTrail = !showTrail;
+        }
         if (dashes == 0)
         {
             hair.color = Color.white;
@@ -677,8 +681,6 @@ public class playerMovement : MonoBehaviour
         {
             hair.color = blinkingColor;
         }
-        GetComponent<Animator>().ResetTrigger("uncrouch");
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Break();
@@ -687,9 +689,16 @@ public class playerMovement : MonoBehaviour
         {
             if (isGrounded && !crouched)
             {
+                GetComponent<Animator>().ResetTrigger("uncrouch");
                 GetComponent<Animator>().SetTrigger("crouch");
                 crouched = true;
             }
+        }
+        if (Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            GetComponent<Animator>().ResetTrigger("crouch");
+            GetComponent<Animator>().SetTrigger("uncrouch");
+            crouched = false;
         }
         if (Input.GetKeyUp(KeyCode.DownArrow))
         {
