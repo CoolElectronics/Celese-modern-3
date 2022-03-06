@@ -33,9 +33,6 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     GameObject sprite;
-
-    [SerializeField]
-    GameObject sprite_1;
     [SerializeField]
     TileBase crumblingTile;
     [SerializeField]
@@ -65,40 +62,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Break();
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            if (movement.isGrounded && !crouched)
-            {
-                if (sprite.activeInHierarchy)
-                {
-                    sprite.GetComponent<Animator>().SetTrigger("crouch");
-                }
-                if (sprite_1.activeInHierarchy)
-                {
-                    sprite_1.GetComponent<Animator>().SetTrigger("crouch");
-                }
-                crouched = true;
-            }
-        }
-        if (Input.GetKeyUp(KeyCode.DownArrow))
-        {
-            if (crouched)
-            {
-                if (sprite.activeInHierarchy)
-                {
-                    sprite.GetComponent<Animator>().SetTrigger("uncrouch");
-                }
-                if (sprite_1.activeInHierarchy)
-                {
-                    sprite_1.GetComponent<Animator>().SetTrigger("uncrouch");
-                }
-                crouched = false;
-            }
-        }
+
     }
 
     private void OnTriggerStay2D(Collider2D col)
@@ -114,10 +78,24 @@ public class Player : MonoBehaviour
                     movement.dashes = movement.maxDashCount;
                 }
                 break;
+            case "DoubleBattery":
+
+                if (movement.dashes != movement.maxDashCount + 1)
+                {
+                    col.gameObject.SetActive(false);
+                    this.Invoke(() => col.gameObject.SetActive(true), 2);
+                    movement.dashes = movement.maxDashCount + 1;
+                }
+                break;
+            case "BlinkBattery":
+                movement.dashes = 1;
+                movement.blink = true;
+                col.gameObject.SetActive(false);
+                this.Invoke(() => col.gameObject.SetActive(true), 4);
+                break;
             case "Spring":
                 Vector2 newvel = col.gameObject.transform.rotation * jspringVel;
                 movement.dashes = movement.maxDashCount;
-                Debug.Log(col.gameObject.transform.rotation.eulerAngles.z);
                 if (col.gameObject.transform.rotation.eulerAngles.z == 90 || col.gameObject.transform.rotation.eulerAngles.z == 270)
                 {
                     newvel = col.gameObject.transform.rotation * springVel;
@@ -137,11 +115,10 @@ public class Player : MonoBehaviour
         {
             if (!dead)
             {
-                if (tile.Item2.name.Contains("spikes"))
+                if (tile.Item2.name.ToLower().Contains("spike"))
                 {
                     float rotation = tile.Item1.GetTransformMatrix(tilepos).rotation.eulerAngles.z;
                     Vector2 direction = new Vector2(-Mathf.Sin(rotation * Mathf.Deg2Rad), Mathf.Cos(rotation * Mathf.Deg2Rad));
-                    Debug.Log(Vector2.Dot(rb.velocity.normalized, direction));
                     if (Vector2.Dot(rb.velocity, direction) < dotThreshold)
                     {
                         Kill(direction);
@@ -233,6 +210,9 @@ public class Player : MonoBehaviour
         GameObject deathParticles = Instantiate(dedParticles, transform.position, Quaternion.identity);
         deathParticles.transform.rotation =
             Quaternion.Euler(0, 0, variation);
+        movement.dashes = movement.maxDashCount;
+        movement.blink = false;
+        movement.blinking = false;
         Destroy(deathParticles, 3f);
     }
 }

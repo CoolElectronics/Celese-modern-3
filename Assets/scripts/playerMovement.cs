@@ -89,6 +89,8 @@ public class playerMovement : MonoBehaviour
 
     [SerializeField]
     float dashEndTime = 0.25f;
+    [SerializeField]
+    float blinkDistance = 0;
 
     [SerializeField]
     [Range(0, 1)]
@@ -109,12 +111,13 @@ public class playerMovement : MonoBehaviour
 
     [SerializeField]
     Color maxDashesColor;
+    [SerializeField]
+    Color blinkingColor;
 
     [SerializeField]
-    GameObject sprite;
-
+    SpriteRenderer sprite;
     [SerializeField]
-    GameObject sprite_1;
+    SpriteRenderer hair;
 
     GameObject activeSprite;
 
@@ -184,11 +187,16 @@ public class playerMovement : MonoBehaviour
     public bool isGrounded = false;
 
     public bool overrideMove = false;
+    public bool blink = false;
+    public bool blinking = false;
 
+    bool jumping = false;
+    bool crouched;
+    Animator anim;
     void Start()
     {
+        anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        SetSprite(sprite);
         InvokeRepeating("DrawTrail", 1f, trailFrequency);
     }
 
@@ -205,7 +213,7 @@ public class playerMovement : MonoBehaviour
         groundRegisterGraceTicks -= 1;
         jumpCooldown -= 1;
 
-
+        anim.SetBool("sliding", wallSliding);
         float horizontal = 0;
         if (LArrowPressed)
         {
@@ -213,8 +221,8 @@ public class playerMovement : MonoBehaviour
             if (dir != -1)
             {
                 dir = -1;
-                sprite.GetComponent<SpriteRenderer>().flipX = true;
-                sprite_1.GetComponent<SpriteRenderer>().flipX = true;
+                sprite.flipX = true;
+                hair.flipX = true;
             }
         }
         if (RArrowPressed)
@@ -223,8 +231,8 @@ public class playerMovement : MonoBehaviour
             if (dir != 1)
             {
                 dir = 1;
-                sprite.GetComponent<SpriteRenderer>().flipX = false;
-                sprite_1.GetComponent<SpriteRenderer>().flipX = false;
+                hair.flipX = false;
+                sprite.flipX = false;
             }
         }
         Vector2 GBoxColliderPos =
@@ -282,9 +290,17 @@ public class playerMovement : MonoBehaviour
         {
             newYvel = -maxSlideSpeed;
         }
-
+        anim.SetBool("walking", isGrounded && horizontal != 0);
         if (isGrounded)
         {
+            // if (!landing)
+            // {
+            // landing = true;
+            if (!crouched)
+            {
+                jumping = false;
+                anim.SetTrigger("land");
+            }
             if (dashes < maxDashCount)
             {
                 dashes = maxDashCount;
@@ -292,6 +308,15 @@ public class playerMovement : MonoBehaviour
             if (jumpCooldown < 0)
             {
                 groundRegisterGraceTicks = groundRegisterGraceTicksMax;
+            }
+        }
+        else
+        {
+            if (!jumping && !crouched)
+            {
+                anim.ResetTrigger("land");
+                anim.SetTrigger("jump");
+                jumping = true;
             }
         }
 
@@ -309,6 +334,7 @@ public class playerMovement : MonoBehaviour
             groundRegisterGraceTicks = -1;
             jumpCooldown = jumpCooldownMax;
             haltMomentum = false;
+
             if (dashing)
             {
                 preserveMomentum = true;
@@ -387,6 +413,7 @@ public class playerMovement : MonoBehaviour
         {
             if (dashes > 0 && dashAvailable)
             {
+                blinking = false;
                 dashes--;
                 NewCameraController.i.Shake(0.1f, 1, 3);
 
@@ -421,14 +448,38 @@ public class playerMovement : MonoBehaviour
                     dashDir.y = 1;
                 }
 
-                Vector2 dashVect = dashDir * dashSpeed;
+                if (blink)
+                {
+                    Vector3 pos = transform.position + (Vector3)dashDir * blinkDistance;
+                    NewCameraController nc = NewCameraController.i;
+                    if (nc.TileGet(nc.terrainMap.WorldToCell(pos)).Item2 != null)
+                    {
+                        GetComponent<Player>().Kill(Vector2.zero);
+                    }
+                    if (!(pos.x < nc.pos.x * nc.screenWidth - nc.screenWidth / 2 || pos.x > nc.pos.x * nc.screenWidth + nc.screenWidth / 2 || pos.y < nc.pos.y * nc.screenHeight - nc.screenHeight / 2 || pos.y > nc.pos.y * nc.screenHeight + nc.screenHeight / 2))
+                    {
+                        transform.position = pos;
+                        blinking = true;
+                        this.Invoke(() => blinking = false, 0.4f);
+                    }
+                    else
+                    {
+                        GetComponent<Player>().Kill(Vector2.zero);
 
-                newXvel = dashVect.x;
-                newYvel = dashVect.y;
-                dashAvailable = false;
+                    }
+                    blink = false;
+                }
+                else
+                {
+                    Vector2 dashVect = dashDir * dashSpeed;
 
-                dashing = true;
-                Invoke("restoreDash", dashEndTime + (dashVect.y == 1 ? 0.5f : 0));
+                    newXvel = dashVect.x;
+                    newYvel = dashVect.y;
+                    dashAvailable = false;
+
+                    dashing = true;
+                    Invoke("restoreDash", dashEndTime + (dashVect.y == 1 ? 0.5f : 0));
+                }
             }
         }
         if (ZUnpressed)
@@ -551,7 +602,6 @@ public class playerMovement : MonoBehaviour
         }
         if (dashing && wallSliding)
         {
-            Debug.Log("attempting to cancel dash");
             CancelInvoke("restoreDash");
             restoreDash();
             rb.gravityScale = normalGrav;
@@ -565,7 +615,6 @@ public class playerMovement : MonoBehaviour
             }
             else
             {
-                Debug.Log("halting momentum");
                 newXvel = newXvel - newXvel / dashEndDampening;
                 newYvel = newYvel - newYvel / dashEndDampening;
             }
@@ -594,6 +643,10 @@ public class playerMovement : MonoBehaviour
         {
             XUnpressed = false;
         }
+        if (blinking)
+        {
+            rb.velocity = Vector2.zero;
+        }
     }
 
     void Update()
@@ -610,15 +663,42 @@ public class playerMovement : MonoBehaviour
 
         if (dashes == 0)
         {
-            SetSprite(sprite);
+            hair.color = Color.white;
         }
         else if (dashes == 1)
         {
-            SetSprite(sprite_1);
+            hair.color = normalDashesColor;
         }
         else if (dashes > 1)
         {
-            //GetComponent<SpriteRenderer>().color = maxDashesColor;
+            hair.color = maxDashesColor;
+        }
+        if (blink)
+        {
+            hair.color = blinkingColor;
+        }
+        GetComponent<Animator>().ResetTrigger("uncrouch");
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Break();
+        }
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (isGrounded && !crouched)
+            {
+                GetComponent<Animator>().SetTrigger("crouch");
+                crouched = true;
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            if (crouched)
+            {
+                GetComponent<Animator>().SetTrigger("uncrouch");
+
+                crouched = false;
+            }
         }
     }
 
@@ -659,12 +739,13 @@ public class playerMovement : MonoBehaviour
 
     void HandleGravity()
     {
-        if (dashing)
+        if (dashing || blinking)
         {
             rb.gravityScale = 0;
         }
         else if (wallSliding)
         {
+
             // rb.gravityScale = slidingGrav;
         }
         else
@@ -678,20 +759,5 @@ public class playerMovement : MonoBehaviour
         dashAvailable = true;
         haltMomentum = true;
         dashing = false;
-    }
-
-    void SetSprite(GameObject _sprite)
-    {
-        if (_sprite == sprite)
-        {
-            sprite_1.SetActive(false);
-        }
-        else
-        {
-            sprite.SetActive(false);
-        }
-
-        activeSprite = _sprite;
-        activeSprite.SetActive(true);
     }
 }

@@ -41,6 +41,12 @@ public class NewCameraController : MonoBehaviour
     [SerializeField]
     GameObject batteryPrefab;
     [SerializeField]
+    GameObject doublebatteryPrefab;
+    [SerializeField]
+    GameObject blinkbatteryPrefab;
+    [SerializeField]
+    GameObject onewayPrefab;
+    [SerializeField]
     GameObject[] buttonPrefabs;
     [SerializeField]
     GameObject springPrefab;
@@ -74,10 +80,8 @@ public class NewCameraController : MonoBehaviour
     void Start()
     {
 
-        Debug.Log("reached point 1");
         watch = new System.Diagnostics.Stopwatch();
         watch.Start();
-        Debug.Log("reached point 2");
 
         cam = Camera.main;
         if (playerpos.activeInHierarchy)
@@ -86,35 +90,28 @@ public class NewCameraController : MonoBehaviour
             pos.x = (int)Mathf.Floor((ppos.x + screenWidth / 2) / screenWidth);
             pos.y = (int)Mathf.Floor((ppos.y + screenHeight / 2) / screenHeight);
         }
-        Debug.Log("reached point 3");
-
         foreach (Tilemap map in blocksmaps)
         {
             map.gameObject.SetActive(false);
             map.gameObject.SetActive(true);
         }
-        Debug.Log("reached point 4");
 
         triggerMap.gameObject.SetActive(true);
         for (int x = terrainMap.cellBounds.min.x; x < terrainMap.cellBounds.max.x; x++)
         {
             for (int y = terrainMap.cellBounds.min.y; y < terrainMap.cellBounds.max.y; y++)
             {
-                // Debug.Log("reached point 5");
                 Vector3Int tilepos = new Vector3Int(x, y, 0);
                 TileBase tile = terrainMap.GetTile(tilepos);
-                // Debug.Log(tile);
                 if (tile != null)
                 {
-                    Debug.Log("the tile is " + tile);
                     // if (tileMappings.Get(tile) != null)
                     // {
                     //     List<TileBase> tiles = tileMappings.Get(tile);
                     //     // terrainMap.SetTile(tilepos, tiles[Random.Range(0, tiles.Count - 1)]);
                     // }
-                    if (tile.name.Contains("spike"))
+                    if (tile.name.ToLower().Contains("spike"))
                     {
-                        // Debug.Log(terrainMap.GetTransformMatrix(tilepos));
                         triggerMap.SetTile(tilepos, tile);
                         triggerMap.SetTransformMatrix(tilepos, terrainMap.GetTransformMatrix(tilepos));
                         terrainMap.SetTile(tilepos, null);
@@ -125,15 +122,25 @@ public class NewCameraController : MonoBehaviour
                         case "1_idle00":
 
                             Vector2Int spawnpos = Vector2Int.zero;
-                            spawnpos.x = (int)Mathf.Floor((x + 22 / 2) / 22);
-                            spawnpos.y = (int)Mathf.Floor((y + 17 / 2) / 17);
-                            Debug.Log(spawnpos + " " + tilepos);
+                            spawnpos.x = (int)Mathf.Floor((x + 24 / 2) / 24);
+                            spawnpos.y = (int)Mathf.Floor((y + 18 / 2) / 18);
                             spawnpoints.Add(spawnpos, tilepos);
                             terrainMap.SetTile(tilepos, null);
                             break;
                         case "battery0":
                             Instantiate(batteryPrefab, terrainMap.CellToWorld(tilepos) + Vector3.one / 2, Quaternion.identity);
                             terrainMap.SetTile(tilepos, null);
+                            break;
+                        case "doublebattery0":
+                            Instantiate(doublebatteryPrefab, terrainMap.CellToWorld(tilepos) + Vector3.one / 2, Quaternion.identity);
+                            terrainMap.SetTile(tilepos, null);
+                            break;
+                        case "blinkbattery0":
+                            Instantiate(blinkbatteryPrefab, terrainMap.CellToWorld(tilepos) + Vector3.one / 2, Quaternion.identity);
+                            terrainMap.SetTile(tilepos, null);
+                            break;
+                        case "oneway0":
+                            tSpawn(tilepos, onewayPrefab);
                             break;
                         case "buttona0":
                             SpawnButton(0, tilepos);
@@ -145,19 +152,9 @@ public class NewCameraController : MonoBehaviour
                             SpawnButton(2, tilepos);
                             break;
                         case "spring0":
-                            Quaternion rot = terrainMap.GetTransformMatrix(tilepos).rotation;
-                            if (rot.eulerAngles.z == 90 || rot.eulerAngles.z == 180)
-                            {
-                                Instantiate(springPrefab, terrainMap.CellToWorld(tilepos) - (rot * Vector2.one / 4), rot);
-
-                            }
-                            else
-                            {
-                                Instantiate(springPrefab, terrainMap.CellToWorld(tilepos) + (rot * Vector2.one / 4), rot);
-
-                            }
-                            terrainMap.SetTile(tilepos, null);
+                            tSpawn(tilepos, springPrefab);
                             break;
+
 
 
 
@@ -166,15 +163,43 @@ public class NewCameraController : MonoBehaviour
             }
 
         }
-        Debug.Log("reached point 6");
-
         RespawnPlayer();
         blockStateUpdateEvent += blockStateUpdate;
-        Debug.Log("reached point 7");
-
         this.Invoke(() => blockStateUpdateEvent(0), 0.1f);
-        Debug.Log("reached point 8");
+    }
+    void tSpawn(Vector3Int tilepos, GameObject prefab)
+    {
+        Quaternion rot = terrainMap.GetTransformMatrix(tilepos).rotation;
+        Debug.Log(rot.eulerAngles.z);
+        switch (rot.eulerAngles.z)
+        {
+            case 0:
+                Instantiate(prefab, terrainMap.CellToWorld(tilepos) + rot * (Vector2.one * 0.3f), rot);
+                break;
+            case 90:
+                Instantiate(prefab, terrainMap.CellToWorld(tilepos) - rot * -(new Vector2(1, -1) * 0.3f), rot);
+                break;
+            case 180:
+                Instantiate(prefab, terrainMap.CellToWorld(tilepos) - rot * (Vector2.one * 0.3f), rot);
+                break;
+            case 270:
+                Instantiate(prefab, terrainMap.CellToWorld(tilepos) - rot * -(new Vector2(-1, 1) * 0.3f), rot);
+                break;
 
+        }
+        terrainMap.SetTile(tilepos, null);
+        // Quaternion rot = terrainMap.GetTransformMatrix(tilepos).rotation;
+        // if (rot.eulerAngles.z == 90 || rot.eulerAngles.z == 180)
+        // {
+        //     Instantiate(prefab, terrainMap.CellToWorld(tilepos) - (rot * Vector2.one / 2), rot);
+
+        // }
+        // else
+        // {
+        //     Instantiate(prefab, terrainMap.CellToWorld(tilepos) + (rot * Vector2.one / 2), rot);
+
+        // }
+        // terrainMap.SetTile(tilepos, null);
     }
     void SpawnButton(int ind, Vector3Int tilepos)
     {
@@ -231,7 +256,6 @@ public class NewCameraController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Return)) { if (isPaused) return; };
             void wtf()
             {
-                Debug.Log("?");
                 isPaused = !isPaused;
                 pauseMenu.SetActive(!pauseMenu.activeInHierarchy);
                 if (isPaused)
@@ -315,6 +339,8 @@ public class NewCameraController : MonoBehaviour
     public void RespawnPlayer()
     {
         target.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        target.GetComponent<playerMovement>().overrideMove = true;
+        this.Invoke(() => target.GetComponent<playerMovement>().overrideMove = false, 0.3f);
         Vector2 respawnPos = defaultRespawnPos + new Vector2(pos.x * screenWidth, pos.y * screenHeight);
         if (spawnpoints.ContainsKey(pos))
         {
@@ -358,7 +384,6 @@ public class NewCameraController : MonoBehaviour
     }
     Vector3 stupidRotationOffset(Quaternion rotation)
     {
-        Debug.Log(rotation.eulerAngles.z);
         switch (rotation.eulerAngles.z)
         {
             case 0:

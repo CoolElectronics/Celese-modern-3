@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Battery
   - Spring
+  - DoubleBattery
+  - BlinkBattery
   layers:
   - Default
   - TransparentFX
