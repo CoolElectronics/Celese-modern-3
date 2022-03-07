@@ -537,7 +537,7 @@ public class playerMovement : MonoBehaviour
                     if (
                         wallSliding == false &&
                         !wallJumpedLeft &&
-                        !wallJumpedRight
+                        !wallJumpedRight && !isGrounded
                     )
                     {
                         wallSliding = true;
@@ -580,7 +580,7 @@ public class playerMovement : MonoBehaviour
                     if (
                         wallSliding == false &&
                         !wallJumpedLeft &&
-                        !wallJumpedRight
+                        !wallJumpedRight && !isGrounded
                     )
                     {
                         wallSliding = true;

@@ -32,6 +32,8 @@ public class Player : MonoBehaviour
     GameObject dedParticles;
 
     [SerializeField]
+    GameObject deathParticles2;
+    [SerializeField]
     GameObject sprite;
     [SerializeField]
     TileBase crumblingTile;
@@ -63,7 +65,10 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            NewCameraController.i.blockStateUpdateEvent(0);
+        }
     }
 
     private void OnTriggerStay2D(Collider2D col)
@@ -182,6 +187,7 @@ public class Player : MonoBehaviour
         //GetComponent<SpriteRenderer>().enabled = false;
         rb.velocity = Vector2.zero;
         Invoke("Respawn", respawnTime);
+        Destroy(Instantiate(deathParticles2, transform.position, Quaternion.identity), 1.5f);
     }
 
     void Respawn()
@@ -196,12 +202,13 @@ public class Player : MonoBehaviour
         NewCameraController.i.blockStateUpdateEvent(0);
 
         //GetComponent<SpriteRenderer>().enabled = true;
-        // GetComponent<Animator>().
+        GetComponent<Animator>().SetTrigger("respawned");
         dead = false;
     }
     public void Kill(Vector3 normal)
     {
         NewCameraController.i.Shake(0.3f, 2, 10);
+        GetComponent<Animator>().SetTrigger("killed");
 
         GetComponent<playerMovement>().enabled = false;
         rb.gravityScale = 0;
@@ -216,13 +223,13 @@ public class Player : MonoBehaviour
             new Vector2(Mathf.Cos(dir), Mathf.Sin(dir)) * deathAnimVel;
         Invoke("DeathAnimStage2", deathAnimPushTime);
 
-        GameObject deathParticles = Instantiate(dedParticles, transform.position, Quaternion.identity);
-        deathParticles.transform.rotation =
-            Quaternion.Euler(0, 0, variation);
+        // GameObject deathParticles = Instantiate(dedParticles, transform.position, Quaternion.identity);
+        // deathParticles.transform.rotation =
+        // Quaternion.Euler(0, 0, deathAnimVel);
         movement.dashes = movement.maxDashCount;
         movement.blink = false;
         movement.blinking = false;
         NewCameraController.i.deaths++;
-        Destroy(deathParticles, 3f);
+        // Destroy(deathParticles, 3f);
     }
 }

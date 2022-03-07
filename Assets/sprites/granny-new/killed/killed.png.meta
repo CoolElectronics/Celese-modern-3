@@ -117,7 +117,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1
-        y: 55
+        y: 73
         width: 16
         height: 16
       alignment: 0
@@ -138,7 +138,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 19
-        y: 55
+        y: 73
         width: 16
         height: 16
       alignment: 0
@@ -159,7 +159,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 37
-        y: 55
+        y: 73
         width: 16
         height: 16
       alignment: 0
@@ -180,7 +180,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 55
-        y: 55
+        y: 73
         width: 16
         height: 16
       alignment: 0
@@ -200,8 +200,8 @@ TextureImporter:
       name: killed04
       rect:
         serializedVersion: 2
-        x: 1
-        y: 37
+        x: 73
+        y: 73
         width: 16
         height: 16
       alignment: 0
@@ -221,8 +221,8 @@ TextureImporter:
       name: killed05
       rect:
         serializedVersion: 2
-        x: 19
-        y: 37
+        x: 1
+        y: 55
         width: 16
         height: 16
       alignment: 0
@@ -242,8 +242,8 @@ TextureImporter:
       name: killed06
       rect:
         serializedVersion: 2
-        x: 37
-        y: 37
+        x: 19
+        y: 55
         width: 16
         height: 16
       alignment: 0
@@ -263,8 +263,8 @@ TextureImporter:
       name: killed07
       rect:
         serializedVersion: 2
-        x: 55
-        y: 37
+        x: 37
+        y: 55
         width: 16
         height: 16
       alignment: 0
@@ -284,8 +284,8 @@ TextureImporter:
       name: killed08
       rect:
         serializedVersion: 2
-        x: 1
-        y: 19
+        x: 55
+        y: 55
         width: 16
         height: 16
       alignment: 0
@@ -305,8 +305,8 @@ TextureImporter:
       name: killed09
       rect:
         serializedVersion: 2
-        x: 19
-        y: 19
+        x: 73
+        y: 55
         width: 16
         height: 16
       alignment: 0
@@ -326,8 +326,8 @@ TextureImporter:
       name: killed10
       rect:
         serializedVersion: 2
-        x: 37
-        y: 19
+        x: 1
+        y: 37
         width: 16
         height: 16
       alignment: 0
@@ -339,6 +339,153 @@ TextureImporter:
       bones: []
       spriteID: 0b99fd56640411ff0800000000000000
       internalID: -67201848332805712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: killed11
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 37
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00000000000000000800000000000000
+      internalID: 0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: killed12
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 37
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00000000000000000800000000000000
+      internalID: 0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: killed13
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 37
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00000000000000000800000000000000
+      internalID: 0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: killed14
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 37
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00000000000000000800000000000000
+      internalID: 0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: killed15
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 19
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00000000000000000800000000000000
+      internalID: 0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: killed16
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 19
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00000000000000000800000000000000
+      internalID: 0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: killed17
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 19
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00000000000000000800000000000000
+      internalID: 0
       vertices: []
       indices: 
       edges: []
@@ -356,14 +503,21 @@ TextureImporter:
     nameFileIdTable:
       killed07: 7712120778448647143
       killed03: -5186579679327990282
+      killed13: 0
+      killed11: 0
       killed08: -7205158565692413927
+      killed15: 0
       killed02: 5890015824346424190
+      killed12: 0
       killed10: -67201848332805712
       killed09: -1280489894936301241
+      killed14: 0
       killed04: -6727398574065636852
       killed06: 179405544556781238
+      killed16: 0
       killed00: 6060528946236715948
       killed05: -907635325512810311
+      killed17: 0
       killed01: -7576767985858576194
   spritePackingTag: 
   pSDRemoveMatte: 0

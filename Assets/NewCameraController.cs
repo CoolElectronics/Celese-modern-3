@@ -169,14 +169,13 @@ public class NewCameraController : MonoBehaviour
             }
 
         }
-        RespawnPlayer();
         blockStateUpdateEvent += blockStateUpdate;
         this.Invoke(() => blockStateUpdateEvent(0), 0.1f);
+        RespawnPlayer();
     }
     void tSpawn(Vector3Int tilepos, GameObject prefab)
     {
         Quaternion rot = terrainMap.GetTransformMatrix(tilepos).rotation;
-        Debug.Log(rot.eulerAngles.z);
         switch (rot.eulerAngles.z)
         {
             case 0:
@@ -353,7 +352,7 @@ public class NewCameraController : MonoBehaviour
             respawnPos = terrainMap.CellToWorld(spawnpoints[pos]) + new Vector3(.5f, .5f, 0);
         }
         target.transform.position = respawnPos;
-        blockStateUpdate(0);
+        blockStateUpdateEvent(0);
     }
     public void Shake(float _amp, float _freq, float _duration)
     {
