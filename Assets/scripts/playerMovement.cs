@@ -6,6 +6,14 @@ public class playerMovement : MonoBehaviour
 {
     Rigidbody2D rb;
 
+
+    [SerializeField]
+    AudioSource jump;
+    [SerializeField]
+    AudioSource dash;
+
+    [SerializeField]
+    GameObject dustParticles;
     //Layer Masks
     [Header("Collider settings")]
     [SerializeField]
@@ -335,6 +343,7 @@ public class playerMovement : MonoBehaviour
             jumpCooldown = jumpCooldownMax;
             haltMomentum = false;
 
+            jump.Play();
             if (dashing)
             {
                 preserveMomentum = true;
@@ -416,6 +425,8 @@ public class playerMovement : MonoBehaviour
                 blinking = false;
                 dashes--;
                 NewCameraController.i.Shake(0.1f, 1, 3);
+
+                dash.Play();
 
                 isGrounded = false;
                 overrideMove = false;
@@ -517,6 +528,7 @@ public class playerMovement : MonoBehaviour
                     wallSliding = false;
 
                     isWallStuck = false;
+                    jump.Play();
 
                     wallJumpedLeft = true;
                     if (horizontal != 0)
@@ -552,6 +564,8 @@ public class playerMovement : MonoBehaviour
             {
                 if (jumpHangGraceTicks > 0)
                 {
+                    jump.Play();
+
                     newYvel = wallJumpVel;
                     jumpHangGraceTicks = -1;
                     groundRegisterGraceTicks = -1;
@@ -621,7 +635,7 @@ public class playerMovement : MonoBehaviour
             haltMomentum = false;
         }
         HandleGravity();
-
+        dustParticles.SetActive(wallSliding || isWallStuck || jumpCooldown > 0);
         //set the new velocity
         if (!overrideMove)
         {

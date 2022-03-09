@@ -76,6 +76,8 @@ public class NewCameraController : MonoBehaviour
     GameObject endPanel;
     [SerializeField]
     TMPro.TextMeshProUGUI endText;
+    [SerializeField]
+    GameObject bg;
     // public NestedDict<TileBase, List<TileBase>> tileMappings;
     void Awake()
     {
@@ -343,6 +345,7 @@ public class NewCameraController : MonoBehaviour
 
     public void RespawnPlayer()
     {
+        bg.transform.localPosition = new Vector3(27 - (40 / 6) * ((pos.x % 5) + 2), (13 / 15) * pos.y, 10);
         target.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         target.GetComponent<playerMovement>().overrideMove = true;
         this.Invoke(() => target.GetComponent<playerMovement>().overrideMove = false, 0.3f);

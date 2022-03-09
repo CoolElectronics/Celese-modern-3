@@ -10,6 +10,10 @@ public class Player : MonoBehaviour
     public bool dead = false;
 
     Rigidbody2D rb;
+    [SerializeField]
+    Sprite springsprite1;
+    [SerializeField]
+    Sprite springsprite2;
 
     [SerializeField]
     float deathAnimVel;
@@ -50,6 +54,8 @@ public class Player : MonoBehaviour
     bool ended = false;
 
     List<Vector3Int> crumbledTiles = new List<Vector3Int>();
+    [SerializeField]
+    AudioSource dashCrystal;
     void Awake()
     {
 
@@ -83,8 +89,10 @@ public class Player : MonoBehaviour
                     this.Invoke(() => col.gameObject.SetActive(true), 1);
                     movement.dashes = movement.maxDashCount;
                 }
+                dashCrystal.Play();
                 break;
             case "DoubleBattery":
+                dashCrystal.Play();
 
                 if (movement.dashes != movement.maxDashCount + 1)
                 {
@@ -94,6 +102,8 @@ public class Player : MonoBehaviour
                 }
                 break;
             case "BlinkBattery":
+                dashCrystal.Play();
+
                 movement.dashes = 1;
                 movement.blink = true;
                 col.gameObject.SetActive(false);
@@ -102,6 +112,8 @@ public class Player : MonoBehaviour
             case "Spring":
                 Vector2 newvel = col.gameObject.transform.rotation * jspringVel;
                 movement.dashes = movement.maxDashCount;
+                col.gameObject.GetComponent<SpriteRenderer>().sprite = springsprite2;
+                this.Invoke(() => col.gameObject.GetComponent<SpriteRenderer>().sprite = springsprite1, 0.2f);
                 if (col.gameObject.transform.rotation.eulerAngles.z == 90 || col.gameObject.transform.rotation.eulerAngles.z == 270)
                 {
                     newvel = col.gameObject.transform.rotation * springVel;
