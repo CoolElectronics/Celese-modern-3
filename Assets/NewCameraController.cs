@@ -50,8 +50,6 @@ public class NewCameraController : MonoBehaviour
     GameObject[] buttonPrefabs;
     [SerializeField]
     GameObject springPrefab;
-
-    private System.Diagnostics.Stopwatch watch;
     public delegate void UpdateBlockState(int newstate);
     public UpdateBlockState blockStateUpdateEvent;
 
@@ -90,7 +88,6 @@ public class NewCameraController : MonoBehaviour
     }
     public void Finish()
     {
-        watch.Stop();
         endPanel.SetActive(true);
         endText.text = "Deaths: " + deaths + "\n" + TimeFormat(System.TimeSpan.FromMilliseconds(elapsedMillis));
     }

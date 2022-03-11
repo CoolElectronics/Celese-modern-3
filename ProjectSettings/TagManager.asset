@@ -9,6 +9,7 @@ TagManager:
   - DoubleBattery
   - BlinkBattery
   - Flag
+  - GoldBerry
   layers:
   - Default
   - TransparentFX
