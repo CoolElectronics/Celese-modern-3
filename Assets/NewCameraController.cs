@@ -78,7 +78,11 @@ public class NewCameraController : MonoBehaviour
     TMPro.TextMeshProUGUI endText;
     [SerializeField]
     GameObject bg;
-    // public NestedDict<TileBase, List<TileBase>> tileMappings;
+
+    [SerializeField]
+    float elapsedMillis;
+    [SerializeField]
+    float pausedMillis;
     void Awake()
     {
         i = this;
@@ -88,13 +92,12 @@ public class NewCameraController : MonoBehaviour
     {
         watch.Stop();
         endPanel.SetActive(true);
-        endText.text = "Deaths: " + deaths + "\n" + TimeFormat(watch.Elapsed);
+        endText.text = "Deaths: " + deaths + "\n" + TimeFormat(System.TimeSpan.FromMilliseconds(elapsedMillis));
     }
     void Start()
     {
 
-        watch = new System.Diagnostics.Stopwatch();
-        watch.Start();
+        elapsedMillis = 0;
 
         cam = Camera.main;
         if (playerpos.activeInHierarchy)
@@ -258,6 +261,11 @@ public class NewCameraController : MonoBehaviour
                 currentItems[selectorPosition].action();
             }
         }
+        else
+        {
+            elapsedMillis += Time.deltaTime * 1000;
+
+        }
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Return))
         {
             if (Input.GetKeyDown(KeyCode.Return)) { if (isPaused) return; };
@@ -303,7 +311,7 @@ public class NewCameraController : MonoBehaviour
     }
     void FixedUpdate()
     {
-        timertext.text = TimeFormat(watch.Elapsed);
+        timertext.text = TimeFormat(System.TimeSpan.FromMilliseconds(elapsedMillis));
         if (target.transform.position.y > (pos.y * screenHeight) - 0.5 + screenHeight / 2)
         {
             pos.y++;
@@ -353,6 +361,10 @@ public class NewCameraController : MonoBehaviour
         if (spawnpoints.ContainsKey(pos))
         {
             respawnPos = terrainMap.CellToWorld(spawnpoints[pos]) + new Vector3(.5f, .5f, 0);
+        }
+        if (target.GetComponent<Player>().berry)
+        {
+            target.GetComponent<Player>().berry.position = respawnPos;
         }
         target.transform.position = respawnPos;
         blockStateUpdateEvent(0);

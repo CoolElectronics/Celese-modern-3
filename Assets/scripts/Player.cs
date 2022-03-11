@@ -56,6 +56,14 @@ public class Player : MonoBehaviour
     List<Vector3Int> crumbledTiles = new List<Vector3Int>();
     [SerializeField]
     AudioSource dashCrystal;
+
+    public Transform berry;
+    [SerializeField]
+    float goldenSmoothTime;
+    [SerializeField]
+    float goldenMaxSpeed;
+    [SerializeField]
+    float maxBerryDist;
     void Awake()
     {
 
@@ -75,12 +83,28 @@ public class Player : MonoBehaviour
         {
             NewCameraController.i.blockStateUpdateEvent(0);
         }
+
+    }
+    void FixedUpdate()
+    {
+        if (berry)
+        {
+            if ((berry.transform.position - transform.position).magnitude > maxBerryDist)
+            {
+                Vector3 v = Vector3.zero;
+                berry.position = Vector3.SmoothDamp(berry.position, transform.position, ref v, goldenSmoothTime, goldenMaxSpeed);
+            }
+        }
     }
 
     private void OnTriggerStay2D(Collider2D col)
     {
         switch (col.tag)
         {
+            case "GoldBerry":
+                Destroy(col.gameObject.GetComponent<BoxCollider2D>());
+                berry = col.transform;
+                break;
             case "Battery":
 
                 if (movement.dashes == 0)
@@ -88,14 +112,14 @@ public class Player : MonoBehaviour
                     col.gameObject.SetActive(false);
                     this.Invoke(() => col.gameObject.SetActive(true), 1);
                     movement.dashes = movement.maxDashCount;
+                    dashCrystal.Play();
                 }
-                dashCrystal.Play();
                 break;
             case "DoubleBattery":
-                dashCrystal.Play();
 
                 if (movement.dashes != movement.maxDashCount + 1)
                 {
+                    dashCrystal.Play();
                     col.gameObject.SetActive(false);
                     this.Invoke(() => col.gameObject.SetActive(true), 2);
                     movement.dashes = movement.maxDashCount + 1;
@@ -242,6 +266,10 @@ public class Player : MonoBehaviour
         movement.blink = false;
         movement.blinking = false;
         NewCameraController.i.deaths++;
+        if (berry)
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
         // Destroy(deathParticles, 3f);
     }
 }
