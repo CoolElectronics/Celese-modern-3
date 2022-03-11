@@ -83,7 +83,7 @@ public class Player : MonoBehaviour
         {
             case "Battery":
 
-                if (movement.dashes != movement.maxDashCount)
+                if (movement.dashes == 0)
                 {
                     col.gameObject.SetActive(false);
                     this.Invoke(() => col.gameObject.SetActive(true), 1);
